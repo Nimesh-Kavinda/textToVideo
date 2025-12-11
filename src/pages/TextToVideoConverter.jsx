@@ -26,11 +26,12 @@ import {
   SelectValue,
 } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
-import { themeColors } from '../lib/theme';
+import { theme as appTheme } from '../theme/theme';
 
 export default function TextToVideoConverter() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const colors = appTheme[theme]; // Get theme colors
   const [prompt, setPrompt] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -92,17 +93,16 @@ export default function TextToVideoConverter() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
-        theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
-      }`}
+      className="min-h-screen transition-colors duration-300"
+      style={{ backgroundColor: colors.background.page }}
     >
       {/* Header */}
       <header
-        className={`border-b ${
-          theme === 'dark'
-            ? 'bg-slate-900 border-slate-800'
-            : 'bg-white border-slate-200'
-        }`}
+        className="border-b"
+        style={{
+          backgroundColor: colors.background.card,
+          borderColor: colors.border.main,
+        }}
       >
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
@@ -111,41 +111,40 @@ export default function TextToVideoConverter() {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/')}
-                className={`${
-                  theme === 'dark'
-                    ? 'hover:bg-slate-800 text-slate-400'
-                    : 'hover:bg-slate-100 text-slate-600'
-                }`}
+                style={{
+                  color: colors.text.secondary,
+                }}
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft
+                  className="w-4 h-4 mr-2"
+                  style={{ color: colors.icon.secondary }}
+                />
                 Back
               </Button>
               <div className="flex items-center gap-2">
                 <Sparkles
                   className="w-5 h-5"
-                  style={{ color: themeColors[theme].primary }}
+                  style={{ color: colors.primary.main }}
                 />
                 <span
-                  className={`font-semibold ${
-                    theme === 'dark' ? 'text-white' : 'text-slate-900'
-                  }`}
+                  className="font-semibold"
+                  style={{ color: colors.text.primary }}
                 >
                   AI Video Generator
                 </span>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className={`${
-                theme === 'dark' ? 'hover:bg-slate-800' : 'hover:bg-slate-100'
-              }`}
-            >
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-yellow-400" />
+                <Sun
+                  className="w-4 h-4"
+                  style={{ color: colors.status.warning }}
+                />
               ) : (
-                <Moon className="w-4 h-4 text-slate-600" />
+                <Moon
+                  className="w-4 h-4"
+                  style={{ color: colors.icon.secondary }}
+                />
               )}
             </Button>
           </div>
@@ -158,19 +157,18 @@ export default function TextToVideoConverter() {
           {/* Left Sidebar - Settings */}
           <div className="space-y-3">
             <Card
-              className={`border ${
-                theme === 'dark'
-                  ? 'bg-slate-900 border-slate-800'
-                  : 'bg-white border-slate-200'
-              }`}
+              className="border"
+              style={{
+                backgroundColor: colors.background.card,
+                borderColor: colors.border.main,
+              }}
             >
               <div className="p-4 space-y-4">
                 {/* Model Selection */}
                 <div className="space-y-2">
                   <label
-                    className={`text-sm font-medium flex items-center justify-between ${
-                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                    }`}
+                    className="text-sm font-medium flex items-center justify-between"
+                    style={{ color: colors.text.primary }}
                   >
                     Model
                     <Badge variant="outline" className="text-xs">
@@ -184,20 +182,20 @@ export default function TextToVideoConverter() {
                     }
                   >
                     <SelectTrigger
-                      className={`h-9 text-sm ${
-                        theme === 'dark'
-                          ? 'bg-slate-800 border-slate-700 hover:border-slate-600'
-                          : 'bg-white border-slate-300 hover:border-slate-400'
-                      }`}
+                      className="h-9 text-sm"
+                      style={{
+                        backgroundColor: colors.background.input,
+                        borderColor: colors.border.main,
+                        color: colors.text.primary,
+                      }}
                     >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent
-                      className={
-                        theme === 'dark'
-                          ? 'bg-slate-800 border-slate-700'
-                          : 'bg-white border-slate-200'
-                      }
+                      style={{
+                        backgroundColor: colors.background.card,
+                        borderColor: colors.border.main,
+                      }}
                     >
                       <SelectItem value="standard">Motion 2.0 Fast</SelectItem>
                       <SelectItem value="premium">
@@ -211,9 +209,8 @@ export default function TextToVideoConverter() {
                 {/* Duration */}
                 <div className="space-y-2">
                   <label
-                    className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                    }`}
+                    className="text-sm font-medium"
+                    style={{ color: colors.text.primary }}
                   >
                     Duration
                   </label>
@@ -228,13 +225,18 @@ export default function TextToVideoConverter() {
                         onClick={() =>
                           handleSettingChange('duration', duration)
                         }
-                        className={`h-8 text-sm font-medium ${
-                          settings.duration === duration
-                            ? 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white border-0'
-                            : theme === 'dark'
-                            ? 'bg-slate-800 border-slate-700 hover:bg-slate-750 hover:border-slate-600 text-slate-300'
-                            : 'bg-white border-slate-300 hover:bg-slate-50 hover:border-slate-400 text-slate-700'
-                        }`}
+                        className="h-8 text-sm font-medium border-0"
+                        style={{
+                          background:
+                            settings.duration === duration
+                              ? colors.primary.gradient
+                              : colors.background.hover,
+                          color:
+                            settings.duration === duration
+                              ? colors.text.white
+                              : colors.text.primary,
+                          borderColor: colors.border.main,
+                        }}
                       >
                         {duration}
                       </Button>
@@ -245,9 +247,8 @@ export default function TextToVideoConverter() {
                 {/* Ratio */}
                 <div className="space-y-2">
                   <label
-                    className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                    }`}
+                    className="text-sm font-medium"
+                    style={{ color: colors.text.primary }}
                   >
                     Ratio
                   </label>
@@ -264,13 +265,21 @@ export default function TextToVideoConverter() {
                         onClick={() =>
                           handleSettingChange('aspectRatio', ratio.value)
                         }
-                        className={`h-14 flex flex-col items-center justify-center gap-1 rounded-md border text-xs font-medium transition-all ${
-                          settings.aspectRatio === ratio.value
-                            ? 'bg-gradient-to-br from-violet-600 to-indigo-600 border-transparent text-white shadow-sm'
-                            : theme === 'dark'
-                            ? 'bg-slate-800 border-slate-700 hover:bg-slate-750 hover:border-slate-600 text-slate-300'
-                            : 'bg-white border-slate-300 hover:bg-slate-50 hover:border-slate-400 text-slate-700'
-                        }`}
+                        className="h-14 flex flex-col items-center justify-center gap-1 rounded-md border text-xs font-medium transition-all"
+                        style={{
+                          background:
+                            settings.aspectRatio === ratio.value
+                              ? colors.primary.gradient
+                              : colors.background.hover,
+                          borderColor:
+                            settings.aspectRatio === ratio.value
+                              ? 'transparent'
+                              : colors.border.main,
+                          color:
+                            settings.aspectRatio === ratio.value
+                              ? colors.text.white
+                              : colors.text.primary,
+                        }}
                       >
                         <span className="text-lg">{ratio.icon}</span>
                         <span>{ratio.label}</span>
@@ -282,9 +291,8 @@ export default function TextToVideoConverter() {
                 {/* Resolution */}
                 <div className="space-y-2">
                   <label
-                    className={`text-sm font-medium ${
-                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                    }`}
+                    className="text-sm font-medium"
+                    style={{ color: colors.text.primary }}
                   >
                     Resolution
                   </label>
@@ -293,13 +301,18 @@ export default function TextToVideoConverter() {
                       <button
                         key={res}
                         onClick={() => handleSettingChange('resolution', res)}
-                        className={`h-8 rounded-md text-xs font-medium transition-all ${
-                          settings.resolution === res
-                            ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm'
-                            : theme === 'dark'
-                            ? 'bg-slate-800 border border-slate-700 hover:bg-slate-750 text-slate-300'
-                            : 'bg-white border border-slate-300 hover:bg-slate-50 text-slate-700'
-                        }`}
+                        className="h-8 rounded-md text-xs font-medium transition-all border"
+                        style={{
+                          background:
+                            settings.resolution === res
+                              ? colors.secondary.gradient
+                              : colors.background.hover,
+                          borderColor: colors.border.main,
+                          color:
+                            settings.resolution === res
+                              ? colors.text.white
+                              : colors.text.primary,
+                        }}
                       >
                         {res}
                       </button>
@@ -310,22 +323,19 @@ export default function TextToVideoConverter() {
                 {/* Toggle Options */}
                 <div className="space-y-3 pt-2">
                   <div
-                    className={`flex items-center justify-between p-3 rounded-lg ${
-                      theme === 'dark' ? 'bg-slate-800/50' : 'bg-slate-50'
-                    }`}
+                    className="flex items-center justify-between p-3 rounded-lg"
+                    style={{ backgroundColor: colors.background.hover }}
                   >
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          theme === 'dark' ? 'bg-slate-700' : 'bg-white'
-                        }`}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: colors.background.card }}
                       >
                         <span className="text-sm">🔊</span>
                       </div>
                       <label
-                        className={`text-sm font-medium ${
-                          theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                        }`}
+                        className="text-sm font-medium"
+                        style={{ color: colors.text.primary }}
                       >
                         Audio
                         <Badge variant="outline" className="ml-2 text-xs">
@@ -342,22 +352,19 @@ export default function TextToVideoConverter() {
                   </div>
 
                   <div
-                    className={`flex items-center justify-between p-3 rounded-lg ${
-                      theme === 'dark' ? 'bg-slate-800/50' : 'bg-slate-50'
-                    }`}
+                    className="flex items-center justify-between p-3 rounded-lg"
+                    style={{ backgroundColor: colors.background.hover }}
                   >
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          theme === 'dark' ? 'bg-slate-700' : 'bg-white'
-                        }`}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: colors.background.card }}
                       >
                         <span className="text-sm">🎬</span>
                       </div>
                       <label
-                        className={`text-sm font-medium ${
-                          theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                        }`}
+                        className="text-sm font-medium"
+                        style={{ color: colors.text.primary }}
                       >
                         Multi-Shot
                         <Badge variant="outline" className="ml-2 text-xs">
@@ -374,22 +381,19 @@ export default function TextToVideoConverter() {
                   </div>
 
                   <div
-                    className={`flex items-center justify-between p-3 rounded-lg ${
-                      theme === 'dark' ? 'bg-slate-800/50' : 'bg-slate-50'
-                    }`}
+                    className="flex items-center justify-between p-3 rounded-lg"
+                    style={{ backgroundColor: colors.background.hover }}
                   >
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          theme === 'dark' ? 'bg-slate-700' : 'bg-white'
-                        }`}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: colors.background.card }}
                       >
                         <span className="text-sm">⚡</span>
                       </div>
                       <label
-                        className={`text-sm font-medium ${
-                          theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
-                        }`}
+                        className="text-sm font-medium"
+                        style={{ color: colors.text.primary }}
                       >
                         Preview Mode
                       </label>
@@ -412,17 +416,21 @@ export default function TextToVideoConverter() {
             <div className="flex gap-2">
               <Button
                 variant="default"
-                className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white"
+                className="border-0"
+                style={{
+                  background: colors.primary.gradient,
+                  color: colors.text.white,
+                }}
               >
                 Video
               </Button>
               <Button
                 variant="outline"
-                className={
-                  theme === 'dark'
-                    ? 'bg-slate-900 border-slate-800 text-slate-400'
-                    : 'bg-white border-slate-300 text-slate-600'
-                }
+                style={{
+                  backgroundColor: colors.background.card,
+                  borderColor: colors.border.main,
+                  color: colors.text.secondary,
+                }}
               >
                 Image
               </Button>
@@ -430,43 +438,75 @@ export default function TextToVideoConverter() {
 
             {/* Video Preview */}
             <Card
-              className={`border ${
-                theme === 'dark'
-                  ? 'bg-slate-900 border-slate-800'
-                  : 'bg-white border-slate-200'
-              }`}
+              className="border"
+              style={{
+                backgroundColor: colors.background.card,
+                borderColor: colors.border.main,
+              }}
             >
               <div className="p-6">
                 <div
-                  className={`relative aspect-video rounded-lg overflow-hidden ${
-                    theme === 'dark' ? 'bg-black' : 'bg-slate-900'
-                  }`}
+                  className="relative aspect-video rounded-lg overflow-hidden"
+                  style={{ backgroundColor: colors.background.canvas }}
                 >
                   {isGenerating ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                    <div
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-4"
+                      style={{ background: colors.primary.gradient }}
+                    >
                       <div className="relative">
-                        <div className="w-20 h-20 border-4 border-slate-700 rounded-full"></div>
-                        <div className="absolute inset-0 w-20 h-20 border-4 border-t-violet-500 border-r-indigo-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                        <div
+                          className="w-20 h-20 border-4 rounded-full"
+                          style={{ borderColor: colors.border.dark }}
+                        ></div>
+                        <div
+                          className="absolute inset-0 w-20 h-20 border-4 border-t-transparent border-r-transparent rounded-full animate-spin"
+                          style={{
+                            borderBottomColor: colors.primary.light,
+                            borderLeftColor: colors.primary.light,
+                          }}
+                        ></div>
                       </div>
-                      <p className="text-white font-medium">
+                      <p
+                        className="font-medium"
+                        style={{ color: colors.text.white }}
+                      >
                         Generating your video...
                       </p>
-                      <div className="w-64 h-1 bg-slate-700 rounded-full overflow-hidden">
+                      <div
+                        className="w-64 h-1 rounded-full overflow-hidden"
+                        style={{ backgroundColor: colors.border.dark }}
+                      >
                         <div
-                          className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-300"
-                          style={{ width: `${progress}%` }}
+                          className="h-full transition-all duration-300"
+                          style={{
+                            width: `${progress}%`,
+                            background: colors.secondary.gradient,
+                          }}
                         ></div>
                       </div>
                     </div>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                      <div className="p-5 rounded-full bg-slate-800">
-                        <Play className="w-10 h-10 text-violet-500" />
+                      <div
+                        className="p-5 rounded-full"
+                        style={{ backgroundColor: colors.background.secondary }}
+                      >
+                        <Play
+                          className="w-10 h-10"
+                          style={{ color: colors.primary.main }}
+                        />
                       </div>
-                      <p className="text-slate-400 font-medium">
+                      <p
+                        className="font-medium"
+                        style={{ color: colors.text.tertiary }}
+                      >
                         Video Not Found
                       </p>
-                      <p className="text-slate-500 text-sm">
+                      <p
+                        className="text-sm"
+                        style={{ color: colors.text.disabled }}
+                      >
                         Start creating your first video
                       </p>
                     </div>
@@ -477,35 +517,38 @@ export default function TextToVideoConverter() {
 
             {/* Prompt Input */}
             <Card
-              className={`border ${
-                theme === 'dark'
-                  ? 'bg-slate-900 border-slate-800'
-                  : 'bg-white border-slate-200'
-              }`}
+              className="border"
+              style={{
+                backgroundColor: colors.background.card,
+                borderColor: colors.border.main,
+              }}
             >
               <div className="p-6 space-y-4">
                 <Textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Describe the content you want to create"
-                  className={`min-h-[100px] resize-none text-sm ${
-                    theme === 'dark'
-                      ? 'bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-violet-500'
-                      : 'bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-violet-400'
-                  }`}
+                  className="min-h-[100px] resize-none text-sm"
+                  style={{
+                    backgroundColor: colors.background.input,
+                    borderColor: colors.border.main,
+                    color: colors.text.primary,
+                  }}
                 />
 
                 {/* File Upload */}
                 <div
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
-                  className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
-                    isDragging
-                      ? 'border-violet-500 bg-violet-500/10'
-                      : theme === 'dark'
-                      ? 'border-slate-700 hover:border-slate-600 bg-slate-800/30'
-                      : 'border-slate-300 hover:border-slate-400 bg-slate-50'
-                  }`}
+                  className="relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer"
+                  style={{
+                    borderColor: isDragging
+                      ? colors.primary.main
+                      : colors.border.main,
+                    backgroundColor: isDragging
+                      ? `${colors.primary.main}10`
+                      : colors.background.hover,
+                  }}
                 >
                   <input
                     type="file"
@@ -515,21 +558,18 @@ export default function TextToVideoConverter() {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   <Upload
-                    className={`w-10 h-10 mx-auto mb-3 ${
-                      theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
-                    }`}
+                    className="w-10 h-10 mx-auto mb-3"
+                    style={{ color: colors.icon.tertiary }}
                   />
                   <p
-                    className={`text-sm font-medium mb-1 ${
-                      theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
-                    }`}
+                    className="text-sm font-medium mb-1"
+                    style={{ color: colors.text.primary }}
                   >
                     Drop files here or click to upload
                   </p>
                   <p
-                    className={`text-xs ${
-                      theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
-                    }`}
+                    className="text-xs"
+                    style={{ color: colors.text.tertiary }}
                   >
                     PDF or TXT files supported
                   </p>
@@ -541,18 +581,17 @@ export default function TextToVideoConverter() {
                     {uploadedFiles.map((file, index) => (
                       <div
                         key={index}
-                        className={`flex items-center justify-between p-3 rounded-lg ${
-                          theme === 'dark' ? 'bg-slate-800' : 'bg-slate-50'
-                        }`}
+                        className="flex items-center justify-between p-3 rounded-lg"
+                        style={{ backgroundColor: colors.background.hover }}
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <FileText className="w-4 h-4 flex-shrink-0 text-violet-500" />
+                          <FileText
+                            className="w-4 h-4 flex-shrink-0"
+                            style={{ color: colors.primary.main }}
+                          />
                           <span
-                            className={`text-sm truncate ${
-                              theme === 'dark'
-                                ? 'text-slate-300'
-                                : 'text-slate-700'
-                            }`}
+                            className="text-sm truncate"
+                            style={{ color: colors.text.primary }}
                           >
                             {file}
                           </span>
@@ -561,7 +600,8 @@ export default function TextToVideoConverter() {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeFile(index)}
-                          className="flex-shrink-0 h-8 w-8 text-red-500 hover:bg-red-500/10"
+                          className="flex-shrink-0 h-8 w-8"
+                          style={{ color: colors.status.error }}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -574,13 +614,22 @@ export default function TextToVideoConverter() {
                 <Button
                   onClick={handleGenerate}
                   disabled={!prompt && uploadedFiles.length === 0}
-                  className="w-full h-12 font-semibold text-base bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/25 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-12 font-semibold text-base shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0"
+                  style={{
+                    background: colors.primary.gradient,
+                    color: colors.text.white,
+                    boxShadow: colors.shadow.lg,
+                  }}
                 >
                   <Wand2 className="w-5 h-5 mr-2" />
                   {isGenerating ? 'Generating...' : 'Generate'}
                   <Badge
                     variant="secondary"
-                    className="ml-2 bg-white/20 text-white border-0"
+                    className="ml-2 border-0"
+                    style={{
+                      backgroundColor: `${colors.text.white}20`,
+                      color: colors.text.white,
+                    }}
                   >
                     {settings.creativity || 70} ⚡
                   </Badge>
