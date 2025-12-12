@@ -21,7 +21,7 @@ export const theme = {
     },
     background: {
       main: '#ffffff', // White
-      page: '#f8fafc', // Slate-50 - Page background
+      page: 'linear-gradient(135deg, #e0f2fe 0%, #dbeafe 25%, #ede9fe 50%, #fae8ff 75%, #ffffff 100%)', // Modern blue-white gradient
       secondary: '#f1f5f9', // Slate-100
       tertiary: '#e2e8f0', // Slate-200
       card: '#ffffff', // White - Card background
@@ -29,6 +29,11 @@ export const theme = {
       input: '#ffffff', // White - Input background
       hover: '#f1f5f9', // Slate-100 - Hover state
       canvas: '#0f172a', // Slate-900 - Dark canvas
+    },
+    scrollbar: {
+      track: '#f1f5f9', // Light track
+      thumb: '#cbd5e1', // Light thumb
+      thumbHover: '#94a3b8', // Light thumb hover
     },
     text: {
       primary: '#0f172a', // Slate-900
@@ -99,15 +104,20 @@ export const theme = {
       dark: '#9333ea', // Purple-600
     },
     background: {
-      main: '#0f172a', // Slate-950
-      page: '#0f172a', // Slate-950 - Page background
-      secondary: '#1e293b', // Slate-800
-      tertiary: '#334155', // Slate-700
-      card: '#1e293b', // Slate-800 - Card background
-      cardHover: '#334155', // Slate-700
-      input: '#1e293b', // Slate-800 - Input background
-      hover: '#334155', // Slate-700 - Hover state
-      canvas: '#000000', // Black - Canvas background
+      main: '#0a0a0a', // Consistent dark background
+      page: 'linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%)', // Super dark mode gradient
+      secondary: '#0a0a0a', // Same as main
+      tertiary: '#0a0a0a', // Same as main
+      card: '#0a0a0a', // Same as main - no visual separation
+      cardHover: '#0f0f0f', // Subtle hover
+      input: '#0a0a0a', // Same as main
+      hover: '#0f0f0f', // Subtle hover
+      canvas: '#000000', // Pure black - Canvas background
+    },
+    scrollbar: {
+      track: '#0a0a0a', // Dark track
+      thumb: '#1a1a1a', // Dark thumb
+      thumbHover: '#2a2a2a', // Dark thumb hover
     },
     text: {
       primary: '#f8fafc', // Slate-50
@@ -118,11 +128,11 @@ export const theme = {
       inverse: '#0f172a', // Slate-900 - for light backgrounds
     },
     border: {
-      main: '#334155', // Slate-700
-      light: '#475569', // Slate-600
-      dark: '#1e293b', // Slate-800
-      input: '#475569', // Slate-600
-      hover: '#64748b', // Slate-500
+      main: 'transparent', // No visible borders
+      light: 'transparent', // No visible borders
+      dark: 'transparent', // No visible borders
+      input: '#1a1a1a', // Very subtle input border
+      hover: '#2a2a2a', // Very subtle hover border
     },
     button: {
       primary: '#8b5cf6', // Violet-500

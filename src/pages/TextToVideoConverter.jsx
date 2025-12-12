@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+
 import { useTheme } from '../context/ThemeContext';
+
 import { theme as appTheme } from '../theme/theme';
+
 import {
   Header,
   SettingsSidebar,
@@ -21,6 +24,7 @@ export default function TextToVideoConverter() {
   const [progress, setProgress] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('motion');
+
   const [settings, setSettings] = useState({
     model: 'standard',
     duration: '5s',
@@ -36,37 +40,47 @@ export default function TextToVideoConverter() {
 
   // Motion control presets
   const motionPresets = [
-    { id: 'none', label: 'None', icon: '🧪' },
+    {
+      id: 'none',
+      label: 'None',
+      icon: '🧪',
+    },
+
     {
       id: 'bullet-time',
       label: 'Bullet Time',
       image:
         'C:/Users/Nimesh/.gemini/antigravity/brain/5822d0f2-33c1-46ce-b580-8b47073aea7f/motion_bullet_time_1765511706744.png',
     },
+
     {
       id: 'crane-down',
       label: 'Crane Down',
       image:
         'C:/Users/Nimesh/.gemini/antigravity/brain/5822d0f2-33c1-46ce-b580-8b47073aea7f/motion_crane_down_1765511724575.png',
     },
+
     {
       id: 'crane-up',
       label: 'Crane Up',
       image:
         'C:/Users/Nimesh/.gemini/antigravity/brain/5822d0f2-33c1-46ce-b580-8b47073aea7f/motion_crane_up_1765511741511.png',
     },
+
     {
       id: 'zoom-in',
       label: 'Crash Zoom In',
       image:
         'C:/Users/Nimesh/.gemini/antigravity/brain/5822d0f2-33c1-46ce-b580-8b47073aea7f/motion_zoom_in_1765511762378.png',
     },
+
     {
       id: 'dolly-in',
       label: 'Dolly In',
       image:
         'C:/Users/Nimesh/.gemini/antigravity/brain/5822d0f2-33c1-46ce-b580-8b47073aea7f/motion_dolly_in_1765511777592.png',
     },
+
     {
       id: 'pan-left',
       label: 'Pan Left',
@@ -99,22 +113,31 @@ export default function TextToVideoConverter() {
   };
 
   const handleSettingChange = (key, value) => {
-    setSettings({ ...settings, [key]: value });
+    setSettings({
+      ...settings,
+      [key]: value,
+    });
   };
 
   const handleGenerate = () => {
     setIsGenerating(true);
     setProgress(0);
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsGenerating(false);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 500);
+
+    const interval = setInterval(
+      () => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsGenerating(false);
+            return 100;
+          }
+
+          return prev + 10;
+        });
+      },
+
+      500
+    );
   };
 
   const handleOpenAdvancedSettings = (tab) => {
@@ -125,17 +148,20 @@ export default function TextToVideoConverter() {
   return (
     <div
       className="min-h-screen transition-colors duration-300 flex flex-col"
-      style={{ backgroundColor: colors.background.page }}
+      style={{
+        background: colors.background.page,
+      }}
     >
-      <AnnouncementBanner colors={colors} />
+      {' '}
+      <AnnouncementBanner colors={colors} />{' '}
       <Header
         theme={theme}
         toggleTheme={toggleTheme}
         colors={colors}
         onOpenSettings={() => setIsSettingsOpen(true)}
-      />
-
+      />{' '}
       <div className="flex flex-1 overflow-hidden">
+        {' '}
         {/* Fixed Sidebar - Independent Scrolling */}
         <aside
           className="hidden lg:block w-[280px] overflow-y-auto border-r"
@@ -144,33 +170,39 @@ export default function TextToVideoConverter() {
             height: 'calc(100vh - 120px)', // Adjust based on header + banner height
           }}
         >
-          <div className="p-3">
+          {' '}
+          <div className="">
+            {' '}
             <SettingsSidebar
               settings={settings}
               onSettingChange={handleSettingChange}
               colors={colors}
               onOpenAdvancedSettings={handleOpenAdvancedSettings}
-            />
-          </div>
-        </aside>
-
+            />{' '}
+          </div>{' '}
+        </aside>{' '}
         {/* Main Content - Independent Scrolling */}
         <main
           className="flex-1 overflow-y-auto"
-          style={{ height: 'calc(100vh - 120px)' }}
+          style={{
+            height: 'calc(100vh - 120px)',
+          }}
         >
+          {' '}
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
+            {' '}
             {/* Mobile Sidebar - Collapsible */}
             <div className="lg:hidden mb-4">
+              {' '}
               <SettingsSidebar
                 settings={settings}
                 onSettingChange={handleSettingChange}
                 colors={colors}
                 onOpenAdvancedSettings={handleOpenAdvancedSettings}
-              />
-            </div>
-
+              />{' '}
+            </div>{' '}
             <div className="space-y-4">
+              {' '}
               <PromptSection
                 prompt={prompt}
                 onPromptChange={setPrompt}
@@ -178,8 +210,7 @@ export default function TextToVideoConverter() {
                 isGenerating={isGenerating}
                 uploadedFilesCount={uploadedFiles.length}
                 colors={colors}
-              />
-
+              />{' '}
               <FileUploadSection
                 uploadedFiles={uploadedFiles}
                 isDragging={isDragging}
@@ -189,18 +220,16 @@ export default function TextToVideoConverter() {
                 onFileUpload={handleFileUpload}
                 onRemoveFile={removeFile}
                 colors={colors}
-              />
-
+              />{' '}
               <VideoPreview
                 isGenerating={isGenerating}
                 progress={progress}
                 colors={colors}
-              />
-            </div>
-          </div>
-        </main>
-      </div>
-
+              />{' '}
+            </div>{' '}
+          </div>{' '}
+        </main>{' '}
+      </div>{' '}
       <AdvancedSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
@@ -210,7 +239,7 @@ export default function TextToVideoConverter() {
         onSettingChange={handleSettingChange}
         motionPresets={motionPresets}
         colors={colors}
-      />
+      />{' '}
     </div>
   );
 }

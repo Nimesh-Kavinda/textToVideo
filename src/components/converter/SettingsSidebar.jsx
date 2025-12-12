@@ -18,9 +18,9 @@ export const SettingsSidebar = ({
   onOpenAdvancedSettings,
 }) => {
   return (
-    <div className="space-y-3">
-      <Card
-        className="border"
+    <div className="">
+      <div
+        className=""
         style={{
           backgroundColor: colors.background.card,
           borderColor: colors.border.main,
@@ -310,7 +310,7 @@ export const SettingsSidebar = ({
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
