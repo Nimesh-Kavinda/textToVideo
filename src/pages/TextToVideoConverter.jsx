@@ -220,6 +220,7 @@ export default function TextToVideoConverter() {
                 onFileUpload={handleFileUpload}
                 onRemoveFile={removeFile}
                 colors={colors}
+                theme={theme}
               />{' '}
               <VideoPreview
                 isGenerating={isGenerating}

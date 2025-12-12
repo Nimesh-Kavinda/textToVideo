@@ -12,6 +12,7 @@ export const FileUploadSection = ({
   onFileUpload,
   onRemoveFile,
   colors,
+  theme,
 }) => {
   return (
     <Card
@@ -33,7 +34,9 @@ export const FileUploadSection = ({
             style={{
               borderColor: isDragging
                 ? colors.primary.main
-                : colors.border.main,
+                : theme === 'dark'
+                ? '#555555'
+                : colors.primary.light,
               backgroundColor: isDragging
                 ? `${colors.primary.main}15`
                 : colors.background.hover,
@@ -53,6 +56,8 @@ export const FileUploadSection = ({
               style={{
                 backgroundColor: isDragging
                   ? `${colors.primary.main}20`
+                  : theme === 'dark'
+                  ? '#444444'
                   : colors.background.card,
                 border: `2px solid ${
                   isDragging ? colors.primary.main : colors.border.main

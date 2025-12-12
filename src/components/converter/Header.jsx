@@ -72,13 +72,49 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
 
           {/* Credits Section - Center */}
           <div
-            className="flex items-center gap-3 px-4 py-2 rounded-full border"
+            className="flex items-center gap-3 px-4 py-2 rounded-full border relative overflow-hidden group"
             style={{
               backgroundColor: colors.background.hover,
               borderColor: colors.border.main,
             }}
           >
-            <div className="flex items-center gap-2">
+            {/* Animated gradient background effect */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                animation: 'waveGradient 3s ease infinite',
+              }}
+            />
+            {/* Animated border effect */}
+            <div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.5), rgba(79, 70, 229, 0.3), rgba(99, 102, 241, 0.3))',
+                backgroundSize: '200% 100%',
+                animation: 'waveGradient 3s ease infinite',
+                padding: '2px',
+                WebkitMask:
+                  'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMaskComposite: 'xor',
+                maskComposite: 'exclude',
+              }}
+            />
+            <div
+              className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(90deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.7), rgba(79, 70, 229, 0.5), rgba(99, 102, 241, 0.5))',
+                backgroundSize: '200% 100%',
+                animation: 'waveGradient 2s ease infinite',
+                padding: '2px',
+                WebkitMask:
+                  'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMaskComposite: 'xor',
+                maskComposite: 'exclude',
+              }}
+            />
+            <div className="flex items-center gap-2 relative z-10">
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
@@ -91,7 +127,7 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
                 />
               </div>
               <span
-                className="font-semibold text-sm"
+                className="font-semibold text-sm relative z-10"
                 style={{ color: colors.text.primary }}
               >
                 150 Credits
@@ -100,7 +136,7 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
             <Button
               variant="default"
               size="sm"
-              className="rounded-full px-4 h-8 font-medium text-xs border-0"
+              className="rounded-full px-4 h-8 font-medium text-xs border-0 relative z-10"
               style={{
                 background: colors.primary.gradient,
                 color: colors.text.white,
@@ -109,6 +145,20 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
               Upgrade
             </Button>
           </div>
+
+          <style jsx>{`
+            @keyframes waveGradient {
+              0% {
+                background-position: 0% 50%;
+              }
+              50% {
+                background-position: 100% 50%;
+              }
+              100% {
+                background-position: 0% 50%;
+              }
+            }
+          `}</style>
 
           {/* Right Section */}
           <div className="flex items-center gap-2">
