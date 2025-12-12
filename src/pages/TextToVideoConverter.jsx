@@ -8,6 +8,7 @@ import {
   FileUploadSection,
   VideoPreview,
   AdvancedSettingsModal,
+  AnnouncementBanner,
 } from '../components/converter';
 
 export default function TextToVideoConverter() {
@@ -126,6 +127,7 @@ export default function TextToVideoConverter() {
       className="min-h-screen transition-colors duration-300"
       style={{ backgroundColor: colors.background.page }}
     >
+      <AnnouncementBanner colors={colors} />
       <Header
         theme={theme}
         toggleTheme={toggleTheme}
