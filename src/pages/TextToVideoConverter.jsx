@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-
+import { Settings } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 import { theme as appTheme } from '../theme/theme';
+import { Button } from '../components/ui/button';
 
 import {
   Header,
@@ -191,17 +192,8 @@ export default function TextToVideoConverter() {
           {' '}
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
             {' '}
-            {/* Mobile Sidebar - Collapsible */}
-            <div className="lg:hidden mb-4">
-              {' '}
-              <SettingsSidebar
-                settings={settings}
-                onSettingChange={handleSettingChange}
-                colors={colors}
-                onOpenAdvancedSettings={handleOpenAdvancedSettings}
-              />{' '}
-            </div>{' '}
-            <div className="space-y-4">
+            {/* Desktop Layout */}
+            <div className="hidden lg:block space-y-4">
               {' '}
               <PromptSection
                 prompt={prompt}
@@ -226,6 +218,52 @@ export default function TextToVideoConverter() {
                 isGenerating={isGenerating}
                 progress={progress}
                 colors={colors}
+              />{' '}
+            </div>{' '}
+            {/* Mobile Layout - Reordered */}
+            <div className="lg:hidden space-y-4">
+              {' '}
+              {/* 1. Video Preview First */}
+              <VideoPreview
+                isGenerating={isGenerating}
+                progress={progress}
+                colors={colors}
+              />{' '}
+              {/* 2. Settings Button */}
+              <Button
+                onClick={() => setIsSettingsOpen(true)}
+                variant="ghost"
+                className="w-full py-6 text-base font-semibold"
+                style={{
+                  color: colors.text.primary,
+                  borderColor: colors.border.main,
+                }}
+              >
+                <Settings className="w-5 h-5 mr-2" />
+                Advanced Settings
+              </Button>{' '}
+              {/* 3. Prompt Section */}
+              <PromptSection
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                onGenerate={handleGenerate}
+                isGenerating={isGenerating}
+                uploadedFilesCount={uploadedFiles.length}
+                colors={colors}
+                isMobile={true}
+              />{' '}
+              {/* 4. File Upload Section */}
+              <FileUploadSection
+                uploadedFiles={uploadedFiles}
+                isDragging={isDragging}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onDragLeave={() => setIsDragging(false)}
+                onFileUpload={handleFileUpload}
+                onRemoveFile={removeFile}
+                colors={colors}
+                theme={theme}
+                isMobile={true}
               />{' '}
             </div>{' '}
           </div>{' '}

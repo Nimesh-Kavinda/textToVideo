@@ -11,6 +11,7 @@ export const PromptSection = ({
   isGenerating,
   uploadedFilesCount,
   colors,
+  isMobile = false,
 }) => {
   return (
     <div className="relative group">
@@ -33,18 +34,18 @@ export const PromptSection = ({
         }}
       >
         <div className="p-6">
-          <div className="flex gap-3 items-stretch">
+          <div className="flex flex-col lg:flex-row gap-3 lg:items-stretch">
             <Textarea
               value={prompt}
               onChange={(e) => onPromptChange(e.target.value)}
               placeholder="Describe the content you want to create..."
               className="flex-1 resize-none text-sm"
-              rows={1}
+              rows={isMobile ? 3 : 1}
               style={{
                 backgroundColor: colors.background.input,
                 borderColor: colors.border.main,
                 color: colors.text.primary,
-                minHeight: '44px',
+                minHeight: isMobile ? '80px' : '44px',
                 maxHeight: '120px',
                 padding: '12px 14px',
               }}
@@ -52,7 +53,7 @@ export const PromptSection = ({
             <Button
               onClick={onGenerate}
               disabled={!prompt && uploadedFilesCount === 0}
-              className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap"
+              className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full lg:w-auto"
               style={{
                 background: colors.primary.gradient,
                 color: colors.text.white,

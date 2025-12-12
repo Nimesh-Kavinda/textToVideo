@@ -14,6 +14,7 @@ export const FileUploadSection = ({
   onRemoveFile,
   colors,
   theme,
+  isMobile = false,
 }) => {
   return (
     <Card
@@ -24,143 +25,196 @@ export const FileUploadSection = ({
       }}
     >
       <div className="p-6 space-y-4">
-        {/* File Upload and Instructions Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
-          {/* File Upload - Left Side */}
-          <div
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            onDragLeave={onDragLeave}
-            className="group relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer hover:border-opacity-100"
-            style={{
-              borderColor: isDragging
-                ? colors.primary.main
-                : theme === 'dark'
+        {/* Desktop: File Upload and Instructions Grid */}
+        {!isMobile && (
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
+            {/* File Upload - Left Side */}
+            <div
+              onDragOver={onDragOver}
+              onDrop={onDrop}
+              onDragLeave={onDragLeave}
+              className="group relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer hover:border-opacity-100"
+              style={{
+                borderColor: isDragging
+                  ? colors.primary.main
+                  : theme === 'dark'
                   ? '#555555'
                   : colors.primary.light,
-              backgroundColor: isDragging
-                ? `${colors.primary.main}15`
-                : colors.background.hover,
-              borderWidth: '3px',
-              borderStyle: 'dashed',
-            }}
-          >
-            <input
-              type="file"
-              multiple
-              accept=".pdf,.txt"
-              onChange={onFileUpload}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <div
-              className="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-300"
-              style={{
                 backgroundColor: isDragging
-                  ? `${colors.primary.main}20`
-                  : theme === 'dark'
+                  ? `${colors.primary.main}15`
+                  : colors.background.hover,
+                borderWidth: '3px',
+                borderStyle: 'dashed',
+              }}
+            >
+              <input
+                type="file"
+                multiple
+                accept=".pdf,.txt"
+                onChange={onFileUpload}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div
+                className="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-300"
+                style={{
+                  backgroundColor: isDragging
+                    ? `${colors.primary.main}20`
+                    : theme === 'dark'
                     ? '#444444'
                     : colors.background.card,
-                border: `2px solid ${isDragging ? colors.primary.main : colors.border.main
+                  border: `2px solid ${
+                    isDragging ? colors.primary.main : colors.border.main
                   }`,
-              }}
-            >
-              <Upload
-                className="w-6 h-6 transition-all duration-300"
-                style={{
-                  color: isDragging
-                    ? colors.primary.main
-                    : colors.icon.secondary,
-                }}
-              />
-            </div>
-            <p
-              className="text-base font-semibold mb-2 transition-colors duration-300"
-              style={{
-                color: isDragging ? colors.primary.main : colors.text.primary,
-              }}
-            >
-              Drop files here or click to upload
-            </p>
-            <p className="text-xs" style={{ color: colors.text.tertiary }}>
-              PDF or TXT files supported
-            </p>
-          </div>
-
-          {/* Instructions Panel - Right Side */}
-          <div
-            className="rounded-xl p-6 border"
-            style={{
-              backgroundColor: colors.background.hover,
-              borderColor: colors.border.main,
-            }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{
-                  background: colors.icon.error,
                 }}
               >
-                <Sparkles
-                  className="w-4 h-4"
-                  style={{ color: colors.text.white }}
+                <Upload
+                  className="w-6 h-6 transition-all duration-300"
+                  style={{
+                    color: isDragging
+                      ? colors.primary.main
+                      : colors.icon.secondary,
+                  }}
                 />
               </div>
-              <h3
-                className="font-semibold text-sm"
-                style={{ color: colors.text.primary }}
+              <p
+                className="text-base font-semibold mb-2 transition-colors duration-300"
+                style={{
+                  color: isDragging ? colors.primary.main : colors.text.primary,
+                }}
               >
-                How to Use
-              </h3>
+                Drop files here or click to upload
+              </p>
+              <p className="text-xs" style={{ color: colors.text.tertiary }}>
+                PDF or TXT files supported
+              </p>
             </div>
-            <motion.div
-              className="space-y-3"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.15
-                  }
-                }
+
+            {/* Instructions Panel - Right Side */}
+            <div
+              className="rounded-xl p-6 border"
+              style={{
+                backgroundColor: colors.background.hover,
+                borderColor: colors.border.main,
               }}
             >
-              {[
-                { number: 1, text: "Enter your video description in the text field above" },
-                { number: 2, text: "Upload PDF or TXT files for additional context (optional)" },
-                { number: 3, text: "Adjust video settings from the left sidebar" },
-                { number: 4, text: "Click Generate to create your AI-powered video" }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="flex gap-3"
-                  variants={{
-                    hidden: { opacity: 0, x: -20 },
-                    visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
+              <div className="flex items-center gap-2 mb-4">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{
+                    background: colors.icon.error,
                   }}
                 >
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{
-                      backgroundColor: `${colors.primary.main}20`,
-                      color: colors.primary.main,
+                  <Sparkles
+                    className="w-4 h-4"
+                    style={{ color: colors.text.white }}
+                  />
+                </div>
+                <h3
+                  className="font-semibold text-sm"
+                  style={{ color: colors.text.primary }}
+                >
+                  How to Use
+                </h3>
+              </div>
+              <motion.div
+                className="space-y-3"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.15,
+                    },
+                  },
+                }}
+              >
+                {[
+                  {
+                    number: 1,
+                    text: 'Enter your video description in the text field above',
+                  },
+                  {
+                    number: 2,
+                    text: 'Upload PDF or TXT files for additional context (optional)',
+                  },
+                  {
+                    number: 3,
+                    text: 'Adjust video settings from the left sidebar',
+                  },
+                  {
+                    number: 4,
+                    text: 'Click Generate to create your AI-powered video',
+                  },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    className="flex gap-3"
+                    variants={{
+                      hidden: { opacity: 0, x: -20 },
+                      visible: {
+                        opacity: 1,
+                        x: 0,
+                        transition: { duration: 0.5, ease: 'easeOut' },
+                      },
                     }}
                   >
-                    {item.number}
-                  </div>
-                  <p
-                    className="text-xs leading-relaxed"
-                    style={{ color: colors.text.secondary }}
-                  >
-                    {item.text}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
+                    <div
+                      className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                      style={{
+                        backgroundColor: `${colors.primary.main}20`,
+                        color: colors.primary.main,
+                      }}
+                    >
+                      {item.number}
+                    </div>
+                    <p
+                      className="text-xs leading-relaxed"
+                      style={{ color: colors.text.secondary }}
+                    >
+                      {item.text}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Mobile: Simple File Upload Button */}
+        {isMobile && (
+          <div className="space-y-3">
+            <label
+              className="block w-full py-4 px-6 text-center rounded-xl border-2 cursor-pointer transition-all"
+              style={{
+                backgroundColor: colors.background.hover,
+                borderColor: colors.border.main,
+                color: colors.text.primary,
+              }}
+            >
+              <input
+                type="file"
+                multiple
+                accept=".pdf,.txt"
+                onChange={onFileUpload}
+                className="hidden"
+              />
+              <div className="flex items-center justify-center gap-3">
+                <Upload
+                  className="w-5 h-5"
+                  style={{ color: colors.primary.main }}
+                />
+              </div>
+              <p
+                className="text-xs mt-2"
+                style={{ color: colors.text.tertiary }}
+              >
+                Upload PDF or TXT files supported
+              </p>
+            </label>
+          </div>
+        )}
 
         {/* Uploaded Files */}
         {uploadedFiles.length > 0 && (
