@@ -1,5 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function Dialog({ open, onOpenChange, children }) {
     const handleBackdropClick = (e) => {
@@ -28,21 +29,39 @@ export function Dialog({ open, onOpenChange, children }) {
         };
     }, [open, onOpenChange]);
 
-    if (!open) return null;
-
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            onClick={handleBackdropClick}
-        >
-            {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" />
+        <AnimatePresence>
+            {open && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleBackdropClick}
+                >
+                    {/* Backdrop */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    />
 
-            {/* Dialog Content */}
-            <div className="relative z-10 animate-in zoom-in-95 fade-in duration-200">
-                {children}
-            </div>
-        </div>
+                    {/* Dialog Content */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        transition={{
+                            duration: 0.2,
+                            ease: "easeOut"
+                        }}
+                        className="relative z-10 w-full flex justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {children}
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
     );
 }
 

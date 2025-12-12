@@ -23,7 +23,7 @@ export const AdvancedSettingsModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="w-full max-w-4xl"
+        className="w-[95vw] max-w-2xl"
         style={{
           backgroundColor: colors.background.card,
           borderColor: colors.border.main,
@@ -53,7 +53,7 @@ export const AdvancedSettingsModal = ({
           </div>
         </DialogHeader>
 
-        <DialogBody style={{ backgroundColor: colors.background.card }}>
+        <DialogBody className="p-4" style={{ backgroundColor: colors.background.card }}>
           {/* Tabs */}
           <div
             className="flex gap-2 mb-6 border-b pb-px"
@@ -67,7 +67,7 @@ export const AdvancedSettingsModal = ({
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="px-4 py-2.5 rounded-t-lg font-medium text-sm transition-all"
+                className="px-3 py-2 rounded-t-lg font-medium text-xs transition-all"
                 style={{
                   backgroundColor:
                     activeTab === tab.id
@@ -83,7 +83,7 @@ export const AdvancedSettingsModal = ({
                       : 'none',
                 }}
               >
-                <span className="mr-2">{tab.icon}</span>
+                <span className="mr-1.5">{tab.icon}</span>
                 {tab.label}
               </button>
             ))}
@@ -95,24 +95,23 @@ export const AdvancedSettingsModal = ({
               <p className="text-sm" style={{ color: colors.text.secondary }}>
                 Select a motion control preset for your video
               </p>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 {motionPresets.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => onSettingChange('motionControl', preset.id)}
                     className="group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
-                      border: `2px solid ${
-                        settings.motionControl === preset.id
-                          ? colors.primary.main
-                          : colors.border.main
-                      }`,
+                      border: `2px solid ${settings.motionControl === preset.id
+                        ? colors.primary.main
+                        : colors.border.main
+                        }`,
                       backgroundColor: colors.background.hover,
                     }}
                   >
                     {/* Image or Icon */}
                     {preset.image ? (
-                      <div className="relative h-32 overflow-hidden">
+                      <div className="relative h-20 overflow-hidden">
                         <img
                           src={preset.image}
                           alt={preset.label}
@@ -124,7 +123,7 @@ export const AdvancedSettingsModal = ({
                       </div>
                     ) : (
                       <div
-                        className="h-32 flex items-center justify-center text-5xl"
+                        className="h-20 flex items-center justify-center text-3xl"
                         style={{
                           backgroundColor: colors.background.canvas,
                         }}
@@ -179,7 +178,7 @@ export const AdvancedSettingsModal = ({
                     <button
                       key={duration}
                       onClick={() => onSettingChange('duration', duration)}
-                      className="h-12 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
+                      className="h-9 rounded-lg text-xs font-medium transition-all hover:scale-[1.02]"
                       style={{
                         background:
                           settings.duration === duration
@@ -189,11 +188,10 @@ export const AdvancedSettingsModal = ({
                           settings.duration === duration
                             ? colors.text.white
                             : colors.text.primary,
-                        border: `2px solid ${
-                          settings.duration === duration
-                            ? 'transparent'
-                            : colors.border.main
-                        }`,
+                        border: `2px solid ${settings.duration === duration
+                          ? 'transparent'
+                          : colors.border.main
+                          }`,
                       }}
                     >
                       {duration}
@@ -210,7 +208,7 @@ export const AdvancedSettingsModal = ({
                 >
                   Aspect Ratio
                 </label>
-                <div className="grid grid-cols-5 gap-3">
+                <div className="grid grid-cols-5 gap-2">
                   {[
                     { value: '16:9', label: '16:9', icon: '▭' },
                     { value: '4:3', label: '4:3', icon: '▬' },
@@ -223,7 +221,7 @@ export const AdvancedSettingsModal = ({
                       onClick={() =>
                         onSettingChange('aspectRatio', ratio.value)
                       }
-                      className="h-20 flex flex-col items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
+                      className="h-16 flex flex-col items-center justify-center gap-1.5 rounded-lg text-xs font-medium transition-all hover:scale-[1.02]"
                       style={{
                         background:
                           settings.aspectRatio === ratio.value
@@ -233,11 +231,10 @@ export const AdvancedSettingsModal = ({
                           settings.aspectRatio === ratio.value
                             ? colors.text.white
                             : colors.text.primary,
-                        border: `2px solid ${
-                          settings.aspectRatio === ratio.value
-                            ? 'transparent'
-                            : colors.border.main
-                        }`,
+                        border: `2px solid ${settings.aspectRatio === ratio.value
+                          ? 'transparent'
+                          : colors.border.main
+                          }`,
                       }}
                     >
                       <span className="text-2xl">{ratio.icon}</span>
@@ -255,12 +252,12 @@ export const AdvancedSettingsModal = ({
                 >
                   Resolution
                 </label>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-2">
                   {['360P', '540P', '720P', '1080P'].map((res) => (
                     <button
                       key={res}
                       onClick={() => onSettingChange('resolution', res)}
-                      className="h-12 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
+                      className="h-9 rounded-lg text-xs font-medium transition-all hover:scale-[1.02]"
                       style={{
                         background:
                           settings.resolution === res
@@ -270,11 +267,10 @@ export const AdvancedSettingsModal = ({
                           settings.resolution === res
                             ? colors.text.white
                             : colors.text.primary,
-                        border: `2px solid ${
-                          settings.resolution === res
-                            ? 'transparent'
-                            : colors.border.main
-                        }`,
+                        border: `2px solid ${settings.resolution === res
+                          ? 'transparent'
+                          : colors.border.main
+                          }`,
                       }}
                     >
                       {res}
@@ -290,7 +286,7 @@ export const AdvancedSettingsModal = ({
             <div className="space-y-4">
               {/* Audio Toggle */}
               <div
-                className="flex items-center justify-between p-4 rounded-xl"
+                className="flex items-center justify-between p-3 rounded-lg"
                 style={{ backgroundColor: colors.background.hover }}
               >
                 <div className="flex items-center gap-3">
@@ -325,7 +321,7 @@ export const AdvancedSettingsModal = ({
 
               {/* Multi-Shot Toggle */}
               <div
-                className="flex items-center justify-between p-4 rounded-xl"
+                className="flex items-center justify-between p-3 rounded-lg"
                 style={{ backgroundColor: colors.background.hover }}
               >
                 <div className="flex items-center gap-3">
@@ -360,7 +356,7 @@ export const AdvancedSettingsModal = ({
 
               {/* Preview Mode Toggle */}
               <div
-                className="flex items-center justify-between p-4 rounded-xl"
+                className="flex items-center justify-between p-3 rounded-lg"
                 style={{ backgroundColor: colors.background.hover }}
               >
                 <div className="flex items-center gap-3">
@@ -402,7 +398,7 @@ export const AdvancedSettingsModal = ({
           >
             <Button
               onClick={onClose}
-              className="w-full h-12 font-semibold text-base shadow-lg transition-all hover:scale-[1.02] border-0"
+              className="w-full h-10 font-semibold text-sm shadow-md transition-all hover:scale-[1.01] border-0"
               style={{
                 background: colors.primary.gradient,
                 color: colors.text.white,

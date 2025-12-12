@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Upload, FileText, Trash2, Sparkles } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -35,8 +36,8 @@ export const FileUploadSection = ({
               borderColor: isDragging
                 ? colors.primary.main
                 : theme === 'dark'
-                ? '#555555'
-                : colors.primary.light,
+                  ? '#555555'
+                  : colors.primary.light,
               backgroundColor: isDragging
                 ? `${colors.primary.main}15`
                 : colors.background.hover,
@@ -57,11 +58,10 @@ export const FileUploadSection = ({
                 backgroundColor: isDragging
                   ? `${colors.primary.main}20`
                   : theme === 'dark'
-                  ? '#444444'
-                  : colors.background.card,
-                border: `2px solid ${
-                  isDragging ? colors.primary.main : colors.border.main
-                }`,
+                    ? '#444444'
+                    : colors.background.card,
+                border: `2px solid ${isDragging ? colors.primary.main : colors.border.main
+                  }`,
               }}
             >
               <Upload
@@ -113,76 +113,52 @@ export const FileUploadSection = ({
                 How to Use
               </h3>
             </div>
-            <div className="space-y-3">
-              <div className="flex gap-3">
-                <div
-                  className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                  style={{
-                    backgroundColor: `${colors.primary.main}20`,
-                    color: colors.primary.main,
+            <motion.div
+              className="space-y-3"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.15
+                  }
+                }
+              }}
+            >
+              {[
+                { number: 1, text: "Enter your video description in the text field above" },
+                { number: 2, text: "Upload PDF or TXT files for additional context (optional)" },
+                { number: 3, text: "Adjust video settings from the left sidebar" },
+                { number: 4, text: "Click Generate to create your AI-powered video" }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="flex gap-3"
+                  variants={{
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
                   }}
                 >
-                  1
-                </div>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: colors.text.secondary }}
-                >
-                  Enter your video description in the text field above
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <div
-                  className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                  style={{
-                    backgroundColor: `${colors.primary.main}20`,
-                    color: colors.primary.main,
-                  }}
-                >
-                  2
-                </div>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: colors.text.secondary }}
-                >
-                  Upload PDF or TXT files for additional context (optional)
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <div
-                  className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                  style={{
-                    backgroundColor: `${colors.primary.main}20`,
-                    color: colors.primary.main,
-                  }}
-                >
-                  3
-                </div>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: colors.text.secondary }}
-                >
-                  Adjust video settings from the left sidebar
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <div
-                  className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                  style={{
-                    backgroundColor: `${colors.primary.main}20`,
-                    color: colors.primary.main,
-                  }}
-                >
-                  4
-                </div>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: colors.text.secondary }}
-                >
-                  Click Generate to create your AI-powered video
-                </p>
-              </div>
-            </div>
+                  <div
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{
+                      backgroundColor: `${colors.primary.main}20`,
+                      color: colors.primary.main,
+                    }}
+                  >
+                    {item.number}
+                  </div>
+                  <p
+                    className="text-xs leading-relaxed"
+                    style={{ color: colors.text.secondary }}
+                  >
+                    {item.text}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
 
