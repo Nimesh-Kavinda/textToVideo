@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Sparkles, Sliders, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Sparkles, Sliders, Moon, Sun, Coins } from 'lucide-react';
 import { Button } from '../ui/button';
 
 export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
@@ -26,10 +26,9 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
               }}
             >
               <ArrowLeft
-                className="w-4 h-4 mr-2"
+                className="w-4 h-4 mr-1"
                 style={{ color: colors.icon.secondary }}
               />
-              Back
             </Button>
             <div className="flex items-center gap-2">
               <Sparkles
@@ -44,6 +43,47 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
               </span>
             </div>
           </div>
+
+          {/* Credits Section - Center */}
+          <div
+            className="flex items-center gap-3 px-4 py-2 rounded-full border"
+            style={{
+              backgroundColor: colors.background.hover,
+              borderColor: colors.border.main,
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{
+                  background: colors.primary.gradient,
+                }}
+              >
+                <Coins
+                  className="w-4 h-4"
+                  style={{ color: colors.text.white }}
+                />
+              </div>
+              <span
+                className="font-semibold text-sm"
+                style={{ color: colors.text.primary }}
+              >
+                150 Credits
+              </span>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              className="rounded-full px-4 h-8 font-medium text-xs border-0"
+              style={{
+                background: colors.primary.gradient,
+                color: colors.text.white,
+              }}
+            >
+              Upgrade
+            </Button>
+          </div>
+
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
