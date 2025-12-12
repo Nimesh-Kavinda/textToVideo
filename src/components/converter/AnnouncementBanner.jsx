@@ -55,7 +55,7 @@ export const AnnouncementBanner = ({ colors }) => {
 
   return (
     <div
-      className="relative overflow-hidden transition-all duration-500"
+      className="relative overflow-hidden transition-all duration-500 hidden md:block"
       style={{
         background: announcements[currentSlide].gradient,
       }}
