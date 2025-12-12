@@ -124,7 +124,7 @@ export default function TextToVideoConverter() {
 
   return (
     <div
-      className="min-h-screen transition-colors duration-300"
+      className="min-h-screen transition-colors duration-300 flex flex-col"
       style={{ backgroundColor: colors.background.page }}
     >
       <AnnouncementBanner colors={colors} />
@@ -135,44 +135,71 @@ export default function TextToVideoConverter() {
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
-      <main className="max-w-[1800px] mx-auto px-4 sm:px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 lg:gap-6">
-          <SettingsSidebar
-            settings={settings}
-            onSettingChange={handleSettingChange}
-            colors={colors}
-            onOpenAdvancedSettings={handleOpenAdvancedSettings}
-          />
-
-          <div className="space-y-4">
-            <PromptSection
-              prompt={prompt}
-              onPromptChange={setPrompt}
-              onGenerate={handleGenerate}
-              isGenerating={isGenerating}
-              uploadedFilesCount={uploadedFiles.length}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Fixed Sidebar - Independent Scrolling */}
+        <aside
+          className="hidden lg:block w-[280px] overflow-y-auto border-r"
+          style={{
+            borderColor: colors.border.main,
+            height: 'calc(100vh - 120px)', // Adjust based on header + banner height
+          }}
+        >
+          <div className="p-3">
+            <SettingsSidebar
+              settings={settings}
+              onSettingChange={handleSettingChange}
               colors={colors}
-            />
-
-            <FileUploadSection
-              uploadedFiles={uploadedFiles}
-              isDragging={isDragging}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              onDragLeave={() => setIsDragging(false)}
-              onFileUpload={handleFileUpload}
-              onRemoveFile={removeFile}
-              colors={colors}
-            />
-
-            <VideoPreview
-              isGenerating={isGenerating}
-              progress={progress}
-              colors={colors}
+              onOpenAdvancedSettings={handleOpenAdvancedSettings}
             />
           </div>
-        </div>
-      </main>
+        </aside>
+
+        {/* Main Content - Independent Scrolling */}
+        <main
+          className="flex-1 overflow-y-auto"
+          style={{ height: 'calc(100vh - 120px)' }}
+        >
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
+            {/* Mobile Sidebar - Collapsible */}
+            <div className="lg:hidden mb-4">
+              <SettingsSidebar
+                settings={settings}
+                onSettingChange={handleSettingChange}
+                colors={colors}
+                onOpenAdvancedSettings={handleOpenAdvancedSettings}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <PromptSection
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                onGenerate={handleGenerate}
+                isGenerating={isGenerating}
+                uploadedFilesCount={uploadedFiles.length}
+                colors={colors}
+              />
+
+              <FileUploadSection
+                uploadedFiles={uploadedFiles}
+                isDragging={isDragging}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onDragLeave={() => setIsDragging(false)}
+                onFileUpload={handleFileUpload}
+                onRemoveFile={removeFile}
+                colors={colors}
+              />
+
+              <VideoPreview
+                isGenerating={isGenerating}
+                progress={progress}
+                colors={colors}
+              />
+            </div>
+          </div>
+        </main>
+      </div>
 
       <AdvancedSettingsModal
         isOpen={isSettingsOpen}
