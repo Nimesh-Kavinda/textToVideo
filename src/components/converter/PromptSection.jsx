@@ -72,11 +72,15 @@ export const PromptSection = ({
               </Button>
               <Button
                 onClick={onGenerate}
-                disabled={!prompt && uploadedFilesCount === 0}
+                disabled={!prompt.trim()}
                 className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full"
                 style={{
-                  background: colors.primary.gradient,
-                  color: colors.text.white,
+                  background: prompt.trim()
+                    ? colors.primary.gradient
+                    : colors.background.hover,
+                  color: prompt.trim()
+                    ? colors.text.white
+                    : colors.text.tertiary,
                   boxShadow: colors.shadow.md,
                   borderRadius: '20px',
                 }}

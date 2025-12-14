@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 import { theme as appTheme } from '../theme/theme';
@@ -22,6 +22,8 @@ export default function TextToVideoConverter() {
   const colors = appTheme[theme];
   const [prompt, setPrompt] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [fileContents, setFileContents] = useState({}); // Store file contents for preview
+  const [previewFile, setPreviewFile] = useState(null); // Currently previewed file
   const [isDragging, setIsDragging] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -128,67 +130,8 @@ export default function TextToVideoConverter() {
         // Check file type and parse accordingly
         if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
           parseAndLoadPrompts(content);
-          setUploadedFiles([...uploadedFiles, file.name]);
-
-          // Scroll to queue after loading
-          setTimeout(() => {
-            const queueElement = document.getElementById('prompt-queue');
-            if (queueElement) {
-              queueElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-              });
-            }
-          }, 400);
-        } else if (file.name.endsWith('.json')) {
-          try {
-            const jsonData = JSON.parse(content);
-            if (Array.isArray(jsonData)) {
-              const prompts = jsonData
-                .map((item) =>
-                  typeof item === 'string' ? item : item.prompt || ''
-                )
-                .filter((p) => p.trim());
-              createPromptQueue(prompts);
-              setUploadedFiles([...uploadedFiles, file.name]);
-
-              // Scroll to queue after loading
-              setTimeout(() => {
-                const queueElement = document.getElementById('prompt-queue');
-                if (queueElement) {
-                  queueElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                  });
-                }
-              }, 400);
-            }
-          } catch (error) {
-            console.error('Error parsing JSON:', error);
-          }
-        } else {
-          // For PDF or other files, just add to uploaded files list
-          setUploadedFiles([...uploadedFiles, file.name]);
-        }
-      };
-
-      reader.readAsText(file);
-    });
-  };
-
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-
-    files.forEach((file) => {
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        const content = event.target.result;
-
-        // Check file type and parse accordingly
-        if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
-          parseAndLoadPrompts(content);
           setUploadedFiles((prev) => [...prev, file.name]);
+          setFileContents((prev) => ({ ...prev, [file.name]: content }));
 
           // Scroll to queue after loading
           setTimeout(() => {
@@ -211,6 +154,7 @@ export default function TextToVideoConverter() {
                 .filter((p) => p.trim());
               createPromptQueue(prompts);
               setUploadedFiles((prev) => [...prev, file.name]);
+              setFileContents((prev) => ({ ...prev, [file.name]: content }));
 
               // Scroll to queue after loading
               setTimeout(() => {
@@ -229,6 +173,70 @@ export default function TextToVideoConverter() {
         } else {
           // For PDF or other files, just add to uploaded files list
           setUploadedFiles((prev) => [...prev, file.name]);
+          setFileContents((prev) => ({ ...prev, [file.name]: content }));
+        }
+      };
+
+      reader.readAsText(file);
+    });
+  };
+
+  const handleFileUpload = (e) => {
+    const files = Array.from(e.target.files);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const content = event.target.result;
+
+        // Check file type and parse accordingly
+        if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+          parseAndLoadPrompts(content);
+          setUploadedFiles((prev) => [...prev, file.name]);
+          setFileContents((prev) => ({ ...prev, [file.name]: content }));
+
+          // Scroll to queue after loading
+          setTimeout(() => {
+            const queueElement = document.getElementById('prompt-queue');
+            if (queueElement) {
+              queueElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+              });
+            }
+          }, 400);
+        } else if (file.name.endsWith('.json')) {
+          try {
+            const jsonData = JSON.parse(content);
+            if (Array.isArray(jsonData)) {
+              const prompts = jsonData
+                .map((item) =>
+                  typeof item === 'string' ? item : item.prompt || ''
+                )
+                .filter((p) => p.trim());
+              createPromptQueue(prompts);
+              setUploadedFiles((prev) => [...prev, file.name]);
+              setFileContents((prev) => ({ ...prev, [file.name]: content }));
+
+              // Scroll to queue after loading
+              setTimeout(() => {
+                const queueElement = document.getElementById('prompt-queue');
+                if (queueElement) {
+                  queueElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                  });
+                }
+              }, 400);
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+          }
+        } else {
+          // For PDF or other files, just add to uploaded files list
+          setUploadedFiles((prev) => [...prev, file.name]);
+          setFileContents((prev) => ({ ...prev, [file.name]: content }));
         }
       };
 
@@ -479,7 +487,21 @@ export default function TextToVideoConverter() {
   };
 
   const removeFile = (index) => {
+    const fileName = uploadedFiles[index];
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+    setFileContents((prev) => {
+      const newContents = { ...prev };
+      delete newContents[fileName];
+      return newContents;
+    });
+  };
+
+  const handleFileClick = (fileName) => {
+    setPreviewFile(fileName);
+  };
+
+  const closePreview = () => {
+    setPreviewFile(null);
   };
 
   const handleSettingChange = (key, value) => {
@@ -619,6 +641,7 @@ export default function TextToVideoConverter() {
                   onDragLeave={() => setIsDragging(false)}
                   onFileUpload={handleFileUpload}
                   onRemoveFile={removeFile}
+                  onFileClick={handleFileClick}
                   onLoadPrompts={handleLoadPromptsFromText}
                   colors={colors}
                   theme={theme}
@@ -705,6 +728,7 @@ export default function TextToVideoConverter() {
                 onDragLeave={() => setIsDragging(false)}
                 onFileUpload={handleFileUpload}
                 onRemoveFile={removeFile}
+                onFileClick={handleFileClick}
                 onLoadPrompts={handleLoadPromptsFromText}
                 colors={colors}
                 theme={theme}
@@ -766,6 +790,56 @@ export default function TextToVideoConverter() {
         motionPresets={motionPresets}
         colors={colors}
       />{' '}
+      {/* File Preview Modal */}
+      {previewFile && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
+          onClick={closePreview}
+        >
+          <div
+            className="relative w-full max-w-3xl max-h-[80vh] rounded-xl border shadow-2xl overflow-hidden"
+            style={{
+              backgroundColor: colors.background.card,
+              borderColor: colors.border.main,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div
+              className="flex items-center justify-between p-4 border-b"
+              style={{ borderColor: colors.border.main }}
+            >
+              <h3
+                className="font-semibold text-lg"
+                style={{ color: colors.text.primary }}
+              >
+                {previewFile}
+              </h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={closePreview}
+                style={{ color: colors.text.secondary }}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            {/* Content */}
+            <div
+              className="p-6 overflow-y-auto"
+              style={{ maxHeight: 'calc(80vh - 80px)' }}
+            >
+              <pre
+                className="text-sm font-mono whitespace-pre-wrap break-words"
+                style={{ color: colors.text.primary }}
+              >
+                {fileContents[previewFile] || 'File content not available'}
+              </pre>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

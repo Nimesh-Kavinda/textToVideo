@@ -11,6 +11,7 @@ export const FileUploadSection = ({
   onDragLeave,
   onFileUpload,
   onRemoveFile,
+  onFileClick,
   onLoadPrompts,
   colors,
   theme,
@@ -143,8 +144,9 @@ export const FileUploadSection = ({
             {uploadedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 rounded-lg"
+                className="flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-opacity-80 transition-all"
                 style={{ backgroundColor: colors.background.hover }}
+                onClick={() => onFileClick && onFileClick(file)}
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <FileText
@@ -161,7 +163,10 @@ export const FileUploadSection = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => onRemoveFile(index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemoveFile(index);
+                  }}
                   className="flex-shrink-0 h-8 w-8"
                   style={{ color: colors.status.error }}
                 >
