@@ -345,35 +345,22 @@ export const GeneratedVideosGallery = ({
                         {/* Action Buttons */}
                         <div className="grid grid-cols-3 gap-2">
                           {video.status === 'completed' && (
-                            <>
-                              <Button
-                                size="sm"
-                                onClick={() => setSelectedVideo(video)}
-                                className="h-8 text-xs px-2"
-                                style={{
-                                  background: colors.primary.gradient,
-                                  color: colors.text.white,
-                                }}
-                              >
-                                <Play className="w-3 h-3 mr-1" />
-                                View
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => onDownload(video)}
-                                className="h-8 text-xs px-2"
-                                style={{
-                                  backgroundColor: colors.background.card,
-                                  borderColor: colors.border.main,
-                                  color: colors.text.primary,
-                                }}
-                              >
-                                <Download className="w-3 h-3 mr-1" />
-                                Save
-                              </Button>
-                            </>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onDownload(video)}
+                              className="h-8 text-xs px-2"
+                              style={{
+                                backgroundColor: colors.background.card,
+                                borderColor: colors.border.main,
+                                color: colors.text.primary,
+                              }}
+                            >
+                              <Download className="w-3 h-3 mr-1" />
+                              Save
+                            </Button>
                           )}
+
                           <Button
                             size="sm"
                             variant="outline"
@@ -388,12 +375,13 @@ export const GeneratedVideosGallery = ({
                             <Copy className="w-3 h-3 mr-1" />
                             Copy
                           </Button>
+
                           {video.status === 'completed' && (
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => onDelete(video.id)}
-                              className="h-8 text-xs px-2 col-span-3"
+                              className="h-8 text-xs px-2"
                               style={{ color: colors.status.error }}
                             >
                               <Trash2 className="w-3 h-3 mr-1" />

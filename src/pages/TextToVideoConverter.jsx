@@ -189,6 +189,14 @@ export default function TextToVideoConverter() {
   const handleLoadPromptsFromText = () => {
     if (!prompt.trim()) return;
     parseAndLoadPrompts(prompt);
+
+    // Scroll to prompt queue section
+    setTimeout(() => {
+      const queueElement = document.getElementById('prompt-queue');
+      if (queueElement) {
+        queueElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
   };
 
   const updatePromptInQueue = (id, settingKey, value) => {
@@ -215,6 +223,29 @@ export default function TextToVideoConverter() {
     setIsBatchProcessing(true);
     setIsPaused(false);
 
+    // Add all videos as processing to gallery immediately
+    const processingVideos = promptQueue.map((item, index) => ({
+      id: Date.now() + index,
+      prompt: item.text,
+      date: new Date().toISOString(),
+      status: 'processing',
+      duration: item.settings.duration,
+      resolution: item.settings.resolution,
+      fps: item.settings.fps.toString(),
+      fileSize: 'Generating...',
+      queueIndex: index,
+    }));
+
+    setGenerationHistory((prev) => [...processingVideos, ...prev]);
+
+    // Scroll to gallery section when batch generation starts
+    setTimeout(() => {
+      const galleryElement = document.getElementById('videos-gallery');
+      if (galleryElement) {
+        galleryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 500);
+
     const delayMs = {
       '30s': 30000,
       '1min': 60000,
@@ -236,6 +267,7 @@ export default function TextToVideoConverter() {
       }
 
       const currentItem = promptQueue[i];
+      const currentVideoId = processingVideos[i].id;
 
       setCurrentProgress({
         completed: i,
@@ -248,8 +280,14 @@ export default function TextToVideoConverter() {
       // Simulate video generation (replace with actual API call)
       await generateVideo(currentItem);
 
-      // Add to history
-      addToHistory(currentItem, 'completed');
+      // Update video status to completed
+      setGenerationHistory((prevHistory) =>
+        prevHistory.map((item) =>
+          item.id === currentVideoId
+            ? { ...item, status: 'completed', fileSize: '12.5 MB' }
+            : item
+        )
+      );
 
       setCurrentProgress((prev) => ({ ...prev, completed: i + 1 }));
 
@@ -373,25 +411,59 @@ export default function TextToVideoConverter() {
     });
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
+
+    const videoId = Date.now();
+
+    // Add processing video to gallery immediately
+    const processingItem = {
+      id: videoId,
+      prompt: prompt,
+      date: new Date().toISOString(),
+      status: 'processing',
+      duration: settings.duration,
+      resolution: settings.resolution,
+      fps: '30',
+      fileSize: 'Generating...',
+    };
+
+    setGenerationHistory((prev) => [processingItem, ...prev]);
     setIsGenerating(true);
     setProgress(0);
 
-    const interval = setInterval(
-      () => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setIsGenerating(false);
-            return 100;
-          }
+    // Scroll to gallery section when generation starts
+    setTimeout(() => {
+      const galleryElement = document.getElementById('videos-gallery');
+      if (galleryElement) {
+        galleryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
 
-          return prev + 10;
-        });
-      },
+    const currentPrompt = prompt;
+    setPrompt(''); // Clear prompt immediately
 
-      500
-    );
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsGenerating(false);
+
+          // Update video status to completed
+          setGenerationHistory((prevHistory) =>
+            prevHistory.map((item) =>
+              item.id === videoId
+                ? { ...item, status: 'completed', fileSize: '12.5 MB' }
+                : item
+            )
+          );
+
+          return 100;
+        }
+
+        return prev + 10;
+      });
+    }, 500);
   };
 
   const handleOpenAdvancedSettings = (tab) => {
@@ -491,26 +563,30 @@ export default function TextToVideoConverter() {
 
               {/* Step 3: Prompt Queue */}
               {promptQueue.length > 0 && (
-                <PromptQueue
-                  promptQueue={promptQueue}
-                  onUpdatePrompt={updatePromptInQueue}
-                  onRemovePrompt={removePromptFromQueue}
-                  colors={colors}
-                  theme={theme}
-                />
+                <div id="prompt-queue">
+                  <PromptQueue
+                    promptQueue={promptQueue}
+                    onUpdatePrompt={updatePromptInQueue}
+                    onRemovePrompt={removePromptFromQueue}
+                    colors={colors}
+                    theme={theme}
+                  />
+                </div>
               )}
 
               {/* Step 4: Generated Videos Gallery */}
               {generationHistory.length > 0 && (
-                <GeneratedVideosGallery
-                  videos={generationHistory}
-                  onCopyPrompt={handleCopyPrompt}
-                  onDownload={handleDownloadVideo}
-                  onDelete={handleDeleteHistory}
-                  colors={colors}
-                  isGenerating={isGenerating}
-                  currentGenerating={currentProgress.currentPrompt}
-                />
+                <div id="videos-gallery">
+                  <GeneratedVideosGallery
+                    videos={generationHistory}
+                    onCopyPrompt={handleCopyPrompt}
+                    onDownload={handleDownloadVideo}
+                    onDelete={handleDeleteHistory}
+                    colors={colors}
+                    isGenerating={isGenerating}
+                    currentGenerating={currentProgress.currentPrompt}
+                  />
+                </div>
               )}
             </div>
             {/* Mobile Layout - Optimized for better UX */}
@@ -573,26 +649,30 @@ export default function TextToVideoConverter() {
 
               {/* 4. Prompt Queue (Only show if there are prompts) */}
               {promptQueue.length > 0 && (
-                <PromptQueue
-                  promptQueue={promptQueue}
-                  onUpdatePrompt={updatePromptInQueue}
-                  onRemovePrompt={removePromptFromQueue}
-                  colors={colors}
-                  theme={theme}
-                />
+                <div id="prompt-queue">
+                  <PromptQueue
+                    promptQueue={promptQueue}
+                    onUpdatePrompt={updatePromptInQueue}
+                    onRemovePrompt={removePromptFromQueue}
+                    colors={colors}
+                    theme={theme}
+                  />
+                </div>
               )}
 
               {/* 5. Generated Videos Gallery (Only show if there are videos) */}
               {generationHistory.length > 0 && (
-                <GeneratedVideosGallery
-                  videos={generationHistory}
-                  onCopyPrompt={handleCopyPrompt}
-                  onDownload={handleDownloadVideo}
-                  onDelete={handleDeleteHistory}
-                  colors={colors}
-                  isGenerating={isGenerating}
-                  currentGenerating={currentProgress.currentPrompt}
-                />
+                <div id="videos-gallery">
+                  <GeneratedVideosGallery
+                    videos={generationHistory}
+                    onCopyPrompt={handleCopyPrompt}
+                    onDownload={handleDownloadVideo}
+                    onDelete={handleDeleteHistory}
+                    colors={colors}
+                    isGenerating={isGenerating}
+                    currentGenerating={currentProgress.currentPrompt}
+                  />
+                </div>
               )}
             </div>
           </div>{' '}
