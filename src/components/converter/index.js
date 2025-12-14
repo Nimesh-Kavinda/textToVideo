@@ -8,3 +8,4 @@ export { AnnouncementBanner } from './AnnouncementBanner';
 export { PromptQueue } from './PromptQueue';
 export { BatchControls } from './BatchControls';
 export { HistoryPanel } from './HistoryPanel';
+export { GeneratedVideosGallery } from './GeneratedVideosGallery';

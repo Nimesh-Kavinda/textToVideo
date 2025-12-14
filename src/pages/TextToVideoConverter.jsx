@@ -10,12 +10,11 @@ import {
   SettingsSidebar,
   PromptSection,
   FileUploadSection,
-  VideoPreview,
   AdvancedSettingsModal,
   AnnouncementBanner,
   PromptQueue,
   BatchControls,
-  HistoryPanel,
+  GeneratedVideosGallery,
 } from '../components/converter';
 
 export default function TextToVideoConverter() {
@@ -447,8 +446,8 @@ export default function TextToVideoConverter() {
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
             {' '}
             {/* Desktop Layout */}
-            <div className="hidden lg:block space-y-4">
-              {' '}
+            <div className="hidden lg:block space-y-5">
+              {/* Step 1: Input Section */}
               <PromptSection
                 prompt={prompt}
                 onPromptChange={setPrompt}
@@ -457,21 +456,41 @@ export default function TextToVideoConverter() {
                 isGenerating={isGenerating}
                 uploadedFilesCount={uploadedFiles.length}
                 colors={colors}
-              />{' '}
-              <FileUploadSection
-                uploadedFiles={uploadedFiles}
-                isDragging={isDragging}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onDragLeave={() => setIsDragging(false)}
-                onFileUpload={handleFileUpload}
-                onRemoveFile={removeFile}
-                onLoadPrompts={handleLoadPromptsFromText}
-                colors={colors}
-                theme={theme}
-              />{' '}
-              {/* Two Column Layout for Queue and Controls */}
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4">
+              />
+
+              {/* Step 2: Two Column Layout - File Upload + Batch Controls */}
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-5">
+                {/* Left: File Upload */}
+                <FileUploadSection
+                  uploadedFiles={uploadedFiles}
+                  isDragging={isDragging}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  onDragLeave={() => setIsDragging(false)}
+                  onFileUpload={handleFileUpload}
+                  onRemoveFile={removeFile}
+                  onLoadPrompts={handleLoadPromptsFromText}
+                  colors={colors}
+                  theme={theme}
+                />
+
+                {/* Right: Batch Controls */}
+                <BatchControls
+                  promptQueue={promptQueue}
+                  batchSettings={batchSettings}
+                  onBatchSettingChange={handleBatchSettingChange}
+                  onStartBatch={handleStartBatch}
+                  onPauseBatch={handlePauseBatch}
+                  onStopBatch={handleStopBatch}
+                  isProcessing={isBatchProcessing}
+                  isPaused={isPaused}
+                  currentProgress={currentProgress}
+                  colors={colors}
+                />
+              </div>
+
+              {/* Step 3: Prompt Queue */}
+              {promptQueue.length > 0 && (
                 <PromptQueue
                   promptQueue={promptQueue}
                   onUpdatePrompt={updatePromptInQueue}
@@ -479,58 +498,39 @@ export default function TextToVideoConverter() {
                   colors={colors}
                   theme={theme}
                 />
-                <div className="space-y-4">
-                  <BatchControls
-                    promptQueue={promptQueue}
-                    batchSettings={batchSettings}
-                    onBatchSettingChange={handleBatchSettingChange}
-                    onStartBatch={handleStartBatch}
-                    onPauseBatch={handlePauseBatch}
-                    onStopBatch={handleStopBatch}
-                    isProcessing={isBatchProcessing}
-                    isPaused={isPaused}
-                    currentProgress={currentProgress}
-                    colors={colors}
-                  />
-                  <HistoryPanel
-                    history={generationHistory}
-                    onCopyPrompt={handleCopyPrompt}
-                    onDownload={handleDownloadVideo}
-                    onDelete={handleDeleteHistory}
-                    onPreview={handlePreviewVideo}
-                    colors={colors}
-                  />
-                </div>
-              </div>
-              <VideoPreview
-                isGenerating={isGenerating}
-                progress={progress}
-                colors={colors}
-              />{' '}
-            </div>{' '}
-            {/* Mobile Layout - Reordered */}
+              )}
+
+              {/* Step 4: Generated Videos Gallery */}
+              {generationHistory.length > 0 && (
+                <GeneratedVideosGallery
+                  videos={generationHistory}
+                  onCopyPrompt={handleCopyPrompt}
+                  onDownload={handleDownloadVideo}
+                  onDelete={handleDeleteHistory}
+                  colors={colors}
+                  isGenerating={isGenerating}
+                  currentGenerating={currentProgress.currentPrompt}
+                />
+              )}
+            </div>
+            {/* Mobile Layout - Optimized for better UX */}
             <div className="lg:hidden space-y-4">
-              {' '}
-              {/* 1. Video Preview First */}
-              <VideoPreview
-                isGenerating={isGenerating}
-                progress={progress}
-                colors={colors}
-              />{' '}
-              {/* 2. Settings Button */}
+              {/* Settings Button */}
               <Button
                 onClick={() => setIsSettingsOpen(true)}
-                variant="ghost"
-                className="w-full py-6 text-base font-semibold"
+                variant="outline"
+                className="w-full py-4 text-sm font-semibold border-2"
                 style={{
                   color: colors.text.primary,
                   borderColor: colors.border.main,
+                  backgroundColor: colors.background.hover,
                 }}
               >
-                <Settings className="w-5 h-5 mr-2" />
-                Advanced Settings
-              </Button>{' '}
-              {/* 3. Prompt Section */}
+                <Settings className="w-4 h-4 mr-2" />
+                Video Settings & Controls
+              </Button>
+
+              {/* 1. Prompt Input */}
               <PromptSection
                 prompt={prompt}
                 onPromptChange={setPrompt}
@@ -540,8 +540,9 @@ export default function TextToVideoConverter() {
                 uploadedFilesCount={uploadedFiles.length}
                 colors={colors}
                 isMobile={true}
-              />{' '}
-              {/* 4. File Upload Section */}
+              />
+
+              {/* 2. File Upload */}
               <FileUploadSection
                 uploadedFiles={uploadedFiles}
                 isDragging={isDragging}
@@ -554,16 +555,9 @@ export default function TextToVideoConverter() {
                 colors={colors}
                 theme={theme}
                 isMobile={true}
-              />{' '}
-              {/* 5. Prompt Queue */}
-              <PromptQueue
-                promptQueue={promptQueue}
-                onUpdatePrompt={updatePromptInQueue}
-                onRemovePrompt={removePromptFromQueue}
-                colors={colors}
-                theme={theme}
-              />{' '}
-              {/* 6. Batch Controls */}
+              />
+
+              {/* 3. Batch Controls */}
               <BatchControls
                 promptQueue={promptQueue}
                 batchSettings={batchSettings}
@@ -575,17 +569,32 @@ export default function TextToVideoConverter() {
                 isPaused={isPaused}
                 currentProgress={currentProgress}
                 colors={colors}
-              />{' '}
-              {/* 7. History Panel */}
-              <HistoryPanel
-                history={generationHistory}
-                onCopyPrompt={handleCopyPrompt}
-                onDownload={handleDownloadVideo}
-                onDelete={handleDeleteHistory}
-                onPreview={handlePreviewVideo}
-                colors={colors}
-              />{' '}
-            </div>{' '}
+              />
+
+              {/* 4. Prompt Queue (Only show if there are prompts) */}
+              {promptQueue.length > 0 && (
+                <PromptQueue
+                  promptQueue={promptQueue}
+                  onUpdatePrompt={updatePromptInQueue}
+                  onRemovePrompt={removePromptFromQueue}
+                  colors={colors}
+                  theme={theme}
+                />
+              )}
+
+              {/* 5. Generated Videos Gallery (Only show if there are videos) */}
+              {generationHistory.length > 0 && (
+                <GeneratedVideosGallery
+                  videos={generationHistory}
+                  onCopyPrompt={handleCopyPrompt}
+                  onDownload={handleDownloadVideo}
+                  onDelete={handleDeleteHistory}
+                  colors={colors}
+                  isGenerating={isGenerating}
+                  currentGenerating={currentProgress.currentPrompt}
+                />
+              )}
+            </div>
           </div>{' '}
         </main>{' '}
       </div>{' '}
