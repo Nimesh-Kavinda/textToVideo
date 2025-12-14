@@ -117,8 +117,63 @@ export default function TextToVideoConverter() {
     e.preventDefault();
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files);
-    const fileNames = files.map((file) => file.name);
-    setUploadedFiles([...uploadedFiles, ...fileNames]);
+
+    // Process each dropped file
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const content = event.target.result;
+
+        // Check file type and parse accordingly
+        if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+          parseAndLoadPrompts(content);
+          setUploadedFiles([...uploadedFiles, file.name]);
+
+          // Scroll to queue after loading
+          setTimeout(() => {
+            const queueElement = document.getElementById('prompt-queue');
+            if (queueElement) {
+              queueElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+              });
+            }
+          }, 400);
+        } else if (file.name.endsWith('.json')) {
+          try {
+            const jsonData = JSON.parse(content);
+            if (Array.isArray(jsonData)) {
+              const prompts = jsonData
+                .map((item) =>
+                  typeof item === 'string' ? item : item.prompt || ''
+                )
+                .filter((p) => p.trim());
+              createPromptQueue(prompts);
+              setUploadedFiles([...uploadedFiles, file.name]);
+
+              // Scroll to queue after loading
+              setTimeout(() => {
+                const queueElement = document.getElementById('prompt-queue');
+                if (queueElement) {
+                  queueElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                  });
+                }
+              }, 400);
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+          }
+        } else {
+          // For PDF or other files, just add to uploaded files list
+          setUploadedFiles([...uploadedFiles, file.name]);
+        }
+      };
+
+      reader.readAsText(file);
+    });
   };
 
   const handleFileUpload = (e) => {
@@ -133,6 +188,18 @@ export default function TextToVideoConverter() {
         // Check file type and parse accordingly
         if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
           parseAndLoadPrompts(content);
+          setUploadedFiles((prev) => [...prev, file.name]);
+
+          // Scroll to queue after loading
+          setTimeout(() => {
+            const queueElement = document.getElementById('prompt-queue');
+            if (queueElement) {
+              queueElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+              });
+            }
+          }, 400);
         } else if (file.name.endsWith('.json')) {
           try {
             const jsonData = JSON.parse(content);
@@ -143,14 +210,25 @@ export default function TextToVideoConverter() {
                 )
                 .filter((p) => p.trim());
               createPromptQueue(prompts);
+              setUploadedFiles((prev) => [...prev, file.name]);
+
+              // Scroll to queue after loading
+              setTimeout(() => {
+                const queueElement = document.getElementById('prompt-queue');
+                if (queueElement) {
+                  queueElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                  });
+                }
+              }, 400);
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
           }
         } else {
           // For PDF or other files, just add to uploaded files list
-          const fileNames = files.map((f) => f.name);
-          setUploadedFiles([...uploadedFiles, ...fileNames]);
+          setUploadedFiles((prev) => [...prev, file.name]);
         }
       };
 
