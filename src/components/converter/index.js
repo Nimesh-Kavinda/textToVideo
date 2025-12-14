@@ -5,3 +5,6 @@ export { FileUploadSection } from './FileUploadSection';
 export { VideoPreview } from './VideoPreview';
 export { AdvancedSettingsModal } from './AdvancedSettingsModal';
 export { AnnouncementBanner } from './AnnouncementBanner';
+export { PromptQueue } from './PromptQueue';
+export { BatchControls } from './BatchControls';
+export { HistoryPanel } from './HistoryPanel';

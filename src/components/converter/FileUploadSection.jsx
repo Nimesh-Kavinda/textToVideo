@@ -12,6 +12,7 @@ export const FileUploadSection = ({
   onDragLeave,
   onFileUpload,
   onRemoveFile,
+  onLoadPrompts,
   colors,
   theme,
   isMobile = false,
@@ -50,7 +51,7 @@ export const FileUploadSection = ({
               <input
                 type="file"
                 multiple
-                accept=".pdf,.txt"
+                accept=".pdf,.txt,.csv,.json"
                 onChange={onFileUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
@@ -85,7 +86,7 @@ export const FileUploadSection = ({
                 Drop files here or click to upload
               </p>
               <p className="text-xs" style={{ color: colors.text.tertiary }}>
-                PDF or TXT files supported
+                TXT, CSV, JSON files for batch prompts or PDF for context
               </p>
             </div>
 
@@ -133,19 +134,19 @@ export const FileUploadSection = ({
                 {[
                   {
                     number: 1,
-                    text: 'Enter your video description in the text field above',
+                    text: 'Upload TXT/CSV/JSON file with multiple prompts (one per line)',
                   },
                   {
                     number: 2,
-                    text: 'Upload PDF or TXT files for additional context (optional)',
+                    text: 'Or paste prompts directly in the text field above',
                   },
                   {
                     number: 3,
-                    text: 'Adjust video settings from the left sidebar',
+                    text: 'Configure individual settings for each prompt in the queue',
                   },
                   {
                     number: 4,
-                    text: 'Click Generate to create your AI-powered video',
+                    text: 'Click "Generate Queue" to batch process all videos',
                   },
                 ].map((item, index) => (
                   <motion.div
@@ -196,7 +197,7 @@ export const FileUploadSection = ({
               <input
                 type="file"
                 multiple
-                accept=".pdf,.txt"
+                accept=".pdf,.txt,.csv,.json"
                 onChange={onFileUpload}
                 className="hidden"
               />
@@ -205,12 +206,13 @@ export const FileUploadSection = ({
                   className="w-5 h-5"
                   style={{ color: colors.primary.main }}
                 />
+                <span className="font-medium">Upload Batch Prompts</span>
               </div>
               <p
                 className="text-xs mt-2"
                 style={{ color: colors.text.tertiary }}
               >
-                Upload PDF or TXT files supported
+                TXT, CSV, JSON or PDF files supported
               </p>
             </label>
           </div>

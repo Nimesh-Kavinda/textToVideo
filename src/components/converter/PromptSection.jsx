@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wand2 } from 'lucide-react';
+import { Wand2, List } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
@@ -8,6 +8,7 @@ export const PromptSection = ({
   prompt,
   onPromptChange,
   onGenerate,
+  onLoadPrompts,
   isGenerating,
   uploadedFilesCount,
   colors,
@@ -34,36 +35,56 @@ export const PromptSection = ({
         }}
       >
         <div className="p-6">
-          <div className="flex flex-col lg:flex-row gap-3 lg:items-stretch">
+          <div className="flex flex-col gap-3">
             <Textarea
               value={prompt}
               onChange={(e) => onPromptChange(e.target.value)}
-              placeholder="Describe the content you want to create..."
+              placeholder="Enter prompts for batch generation (one prompt per line)&#10;Example:&#10;A dragon flying over mountains&#10;A sunset at the beach&#10;City lights at night"
               className="flex-1 resize-none text-sm"
-              rows={isMobile ? 3 : 1}
+              rows={isMobile ? 4 : 6}
               style={{
                 backgroundColor: colors.background.input,
                 borderColor: colors.border.main,
                 color: colors.text.primary,
-                minHeight: isMobile ? '80px' : '44px',
-                maxHeight: '120px',
+                minHeight: isMobile ? '120px' : '160px',
+                maxHeight: '300px',
                 padding: '12px 14px',
               }}
             />
-            <Button
-              onClick={onGenerate}
-              disabled={!prompt && uploadedFilesCount === 0}
-              className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full lg:w-auto"
-              style={{
-                background: colors.primary.gradient,
-                color: colors.text.white,
-                boxShadow: colors.shadow.md,
-                borderRadius: '20px',
-              }}
-            >
-              <Wand2 className="w-4 h-4 mr-2" />
-              {isGenerating ? 'Generating...' : 'Generate'}
-            </Button>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <Button
+                onClick={onLoadPrompts}
+                disabled={!prompt.trim()}
+                className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full"
+                style={{
+                  background: prompt.trim()
+                    ? colors.secondary.gradient
+                    : colors.background.hover,
+                  color: prompt.trim()
+                    ? colors.text.white
+                    : colors.text.tertiary,
+                  boxShadow: colors.shadow.md,
+                  borderRadius: '20px',
+                }}
+              >
+                <List className="w-4 h-4 mr-2" />
+                Load Prompts to Queue
+              </Button>
+              <Button
+                onClick={onGenerate}
+                disabled={!prompt && uploadedFilesCount === 0}
+                className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full"
+                style={{
+                  background: colors.primary.gradient,
+                  color: colors.text.white,
+                  boxShadow: colors.shadow.md,
+                  borderRadius: '20px',
+                }}
+              >
+                <Wand2 className="w-4 h-4 mr-2" />
+                {isGenerating ? 'Generating...' : 'Generate Single'}
+              </Button>
+            </div>
           </div>
         </div>
       </Card>

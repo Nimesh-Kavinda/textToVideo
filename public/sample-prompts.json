@@ -1,0 +1,72 @@
+[
+  {
+    "prompt": "A majestic dragon flying over snow-capped mountains at sunset",
+    "category": "fantasy",
+    "style": "cinematic",
+    "suggested_duration": "10s",
+    "notes": "Epic hero shot, high motion intensity"
+  },
+  {
+    "prompt": "A peaceful beach with gentle waves and golden sand",
+    "category": "nature",
+    "style": "realistic",
+    "suggested_duration": "5s",
+    "notes": "Calm establishing shot, low motion"
+  },
+  {
+    "prompt": "City skyline at night with bright lights and traffic",
+    "category": "urban",
+    "style": "timelapse",
+    "suggested_duration": "30s",
+    "notes": "Fast-paced urban scene, high FPS"
+  },
+  {
+    "prompt": "A dense forest path with morning mist and sunlight rays",
+    "category": "nature",
+    "style": "atmospheric",
+    "suggested_duration": "10s",
+    "notes": "Mystical atmosphere, static camera"
+  },
+  {
+    "prompt": "Underwater coral reef with colorful tropical fish",
+    "category": "nature",
+    "style": "vibrant",
+    "suggested_duration": "10s",
+    "notes": "Underwater scene, medium motion"
+  },
+  {
+    "prompt": "Northern lights dancing over a frozen lake",
+    "category": "nature",
+    "style": "magical",
+    "suggested_duration": "30s",
+    "notes": "Aurora borealis, high motion for lights"
+  },
+  {
+    "prompt": "Cherry blossoms falling in a Japanese garden",
+    "category": "nature",
+    "style": "serene",
+    "suggested_duration": "5s",
+    "notes": "Peaceful scene, low motion"
+  },
+  {
+    "prompt": "Autumn forest with red and orange leaves",
+    "category": "nature",
+    "style": "warm",
+    "suggested_duration": "10s",
+    "notes": "Fall colors, pan camera movement"
+  },
+  {
+    "prompt": "Starry night sky over mountain peaks",
+    "category": "space",
+    "style": "mystical",
+    "suggested_duration": "30s",
+    "notes": "Night sky, static or slow pan"
+  },
+  {
+    "prompt": "Time-lapse of clouds moving over a valley",
+    "category": "nature",
+    "style": "dynamic",
+    "suggested_duration": "30s",
+    "notes": "Fast cloud movement, high motion"
+  }
+]

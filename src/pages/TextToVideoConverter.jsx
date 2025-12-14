@@ -13,6 +13,9 @@ import {
   VideoPreview,
   AdvancedSettingsModal,
   AnnouncementBanner,
+  PromptQueue,
+  BatchControls,
+  HistoryPanel,
 } from '../components/converter';
 
 export default function TextToVideoConverter() {
@@ -25,6 +28,22 @@ export default function TextToVideoConverter() {
   const [progress, setProgress] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('motion');
+
+  // Batch processing state
+  const [promptQueue, setPromptQueue] = useState([]);
+  const [batchSettings, setBatchSettings] = useState({
+    autoDownload: false,
+    createCSV: false,
+    delay: '1min',
+  });
+  const [isBatchProcessing, setIsBatchProcessing] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [currentProgress, setCurrentProgress] = useState({
+    completed: 0,
+    currentPrompt: null,
+    estimatedTime: null,
+  });
+  const [generationHistory, setGenerationHistory] = useState([]);
 
   const [settings, setSettings] = useState({
     model: 'standard',
@@ -105,8 +124,243 @@ export default function TextToVideoConverter() {
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
-    const fileNames = files.map((file) => file.name);
-    setUploadedFiles([...uploadedFiles, ...fileNames]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const content = event.target.result;
+
+        // Check file type and parse accordingly
+        if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+          parseAndLoadPrompts(content);
+        } else if (file.name.endsWith('.json')) {
+          try {
+            const jsonData = JSON.parse(content);
+            if (Array.isArray(jsonData)) {
+              const prompts = jsonData
+                .map((item) =>
+                  typeof item === 'string' ? item : item.prompt || ''
+                )
+                .filter((p) => p.trim());
+              createPromptQueue(prompts);
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+          }
+        } else {
+          // For PDF or other files, just add to uploaded files list
+          const fileNames = files.map((f) => f.name);
+          setUploadedFiles([...uploadedFiles, ...fileNames]);
+        }
+      };
+
+      reader.readAsText(file);
+    });
+  };
+
+  const parseAndLoadPrompts = (text) => {
+    const prompts = text
+      .split('\n')
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+
+    createPromptQueue(prompts);
+  };
+
+  const createPromptQueue = (prompts) => {
+    const queue = prompts.map((promptText, index) => ({
+      id: Date.now() + index,
+      text: promptText,
+      settings: {
+        duration: settings.duration,
+        fps: 30,
+        resolution: settings.resolution,
+        aspectRatio: settings.aspectRatio,
+        motionIntensity: 'Medium',
+        cameraMovement: 'static',
+        style: settings.style,
+      },
+    }));
+
+    setPromptQueue([...promptQueue, ...queue]);
+    setPrompt(''); // Clear the input after loading
+  };
+
+  const handleLoadPromptsFromText = () => {
+    if (!prompt.trim()) return;
+    parseAndLoadPrompts(prompt);
+  };
+
+  const updatePromptInQueue = (id, settingKey, value) => {
+    setPromptQueue(
+      promptQueue.map((item) =>
+        item.id === id
+          ? { ...item, settings: { ...item.settings, [settingKey]: value } }
+          : item
+      )
+    );
+  };
+
+  const removePromptFromQueue = (id) => {
+    setPromptQueue(promptQueue.filter((item) => item.id !== id));
+  };
+
+  const handleBatchSettingChange = (key, value) => {
+    setBatchSettings({ ...batchSettings, [key]: value });
+  };
+
+  const handleStartBatch = async () => {
+    if (promptQueue.length === 0) return;
+
+    setIsBatchProcessing(true);
+    setIsPaused(false);
+
+    const delayMs = {
+      '30s': 30000,
+      '1min': 60000,
+      '2min': 120000,
+      '5min': 300000,
+    }[batchSettings.delay];
+
+    for (let i = 0; i < promptQueue.length; i++) {
+      if (isPaused) {
+        // Wait until unpaused
+        await new Promise((resolve) => {
+          const checkPause = setInterval(() => {
+            if (!isPaused) {
+              clearInterval(checkPause);
+              resolve();
+            }
+          }, 500);
+        });
+      }
+
+      const currentItem = promptQueue[i];
+
+      setCurrentProgress({
+        completed: i,
+        currentPrompt: currentItem.text,
+        estimatedTime: `${Math.ceil(
+          (promptQueue.length - i) * (delayMs / 60000)
+        )} minutes`,
+      });
+
+      // Simulate video generation (replace with actual API call)
+      await generateVideo(currentItem);
+
+      // Add to history
+      addToHistory(currentItem, 'completed');
+
+      setCurrentProgress((prev) => ({ ...prev, completed: i + 1 }));
+
+      // Delay before next prompt (except for the last one)
+      if (i < promptQueue.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+
+    setIsBatchProcessing(false);
+    setCurrentProgress({
+      completed: promptQueue.length,
+      currentPrompt: null,
+      estimatedTime: null,
+    });
+
+    if (batchSettings.createCSV) {
+      exportToCSV();
+    }
+  };
+
+  const generateVideo = async (promptItem) => {
+    // Simulate video generation with progress
+    setIsGenerating(true);
+    setProgress(0);
+
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsGenerating(false);
+            resolve();
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 500);
+    });
+  };
+
+  const handlePauseBatch = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const handleStopBatch = () => {
+    setIsBatchProcessing(false);
+    setIsPaused(false);
+    setCurrentProgress({
+      completed: 0,
+      currentPrompt: null,
+      estimatedTime: null,
+    });
+  };
+
+  const addToHistory = (promptItem, status) => {
+    const historyItem = {
+      id: Date.now(),
+      prompt: promptItem.text,
+      date: new Date().toISOString(),
+      status: status,
+      duration: promptItem.settings.duration,
+      resolution: promptItem.settings.resolution,
+      fps: promptItem.settings.fps,
+      fileSize: '12.5 MB', // Simulated
+    };
+
+    setGenerationHistory((prev) => [historyItem, ...prev]);
+  };
+
+  const exportToCSV = () => {
+    const csvContent = [
+      ['Prompt', 'Duration', 'Resolution', 'FPS', 'Status', 'Date'].join(','),
+      ...generationHistory.map((item) =>
+        [
+          item.prompt,
+          item.duration,
+          item.resolution,
+          item.fps,
+          item.status,
+          new Date(item.date).toLocaleString(),
+        ].join(',')
+      ),
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `video-generation-${Date.now()}.csv`;
+    a.click();
+  };
+
+  const handleCopyPrompt = (promptText) => {
+    navigator.clipboard.writeText(promptText);
+    // You can add a toast notification here
+  };
+
+  const handleDownloadVideo = (historyItem) => {
+    // Implement download logic
+    console.log('Download video:', historyItem);
+  };
+
+  const handleDeleteHistory = (id) => {
+    setGenerationHistory((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handlePreviewVideo = (historyItem) => {
+    // Implement preview logic
+    console.log('Preview video:', historyItem);
   };
 
   const removeFile = (index) => {
@@ -199,6 +453,7 @@ export default function TextToVideoConverter() {
                 prompt={prompt}
                 onPromptChange={setPrompt}
                 onGenerate={handleGenerate}
+                onLoadPrompts={handleLoadPromptsFromText}
                 isGenerating={isGenerating}
                 uploadedFilesCount={uploadedFiles.length}
                 colors={colors}
@@ -211,9 +466,42 @@ export default function TextToVideoConverter() {
                 onDragLeave={() => setIsDragging(false)}
                 onFileUpload={handleFileUpload}
                 onRemoveFile={removeFile}
+                onLoadPrompts={handleLoadPromptsFromText}
                 colors={colors}
                 theme={theme}
               />{' '}
+              {/* Two Column Layout for Queue and Controls */}
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4">
+                <PromptQueue
+                  promptQueue={promptQueue}
+                  onUpdatePrompt={updatePromptInQueue}
+                  onRemovePrompt={removePromptFromQueue}
+                  colors={colors}
+                  theme={theme}
+                />
+                <div className="space-y-4">
+                  <BatchControls
+                    promptQueue={promptQueue}
+                    batchSettings={batchSettings}
+                    onBatchSettingChange={handleBatchSettingChange}
+                    onStartBatch={handleStartBatch}
+                    onPauseBatch={handlePauseBatch}
+                    onStopBatch={handleStopBatch}
+                    isProcessing={isBatchProcessing}
+                    isPaused={isPaused}
+                    currentProgress={currentProgress}
+                    colors={colors}
+                  />
+                  <HistoryPanel
+                    history={generationHistory}
+                    onCopyPrompt={handleCopyPrompt}
+                    onDownload={handleDownloadVideo}
+                    onDelete={handleDeleteHistory}
+                    onPreview={handlePreviewVideo}
+                    colors={colors}
+                  />
+                </div>
+              </div>
               <VideoPreview
                 isGenerating={isGenerating}
                 progress={progress}
@@ -247,6 +535,7 @@ export default function TextToVideoConverter() {
                 prompt={prompt}
                 onPromptChange={setPrompt}
                 onGenerate={handleGenerate}
+                onLoadPrompts={handleLoadPromptsFromText}
                 isGenerating={isGenerating}
                 uploadedFilesCount={uploadedFiles.length}
                 colors={colors}
@@ -261,9 +550,40 @@ export default function TextToVideoConverter() {
                 onDragLeave={() => setIsDragging(false)}
                 onFileUpload={handleFileUpload}
                 onRemoveFile={removeFile}
+                onLoadPrompts={handleLoadPromptsFromText}
                 colors={colors}
                 theme={theme}
                 isMobile={true}
+              />{' '}
+              {/* 5. Prompt Queue */}
+              <PromptQueue
+                promptQueue={promptQueue}
+                onUpdatePrompt={updatePromptInQueue}
+                onRemovePrompt={removePromptFromQueue}
+                colors={colors}
+                theme={theme}
+              />{' '}
+              {/* 6. Batch Controls */}
+              <BatchControls
+                promptQueue={promptQueue}
+                batchSettings={batchSettings}
+                onBatchSettingChange={handleBatchSettingChange}
+                onStartBatch={handleStartBatch}
+                onPauseBatch={handlePauseBatch}
+                onStopBatch={handleStopBatch}
+                isProcessing={isBatchProcessing}
+                isPaused={isPaused}
+                currentProgress={currentProgress}
+                colors={colors}
+              />{' '}
+              {/* 7. History Panel */}
+              <HistoryPanel
+                history={generationHistory}
+                onCopyPrompt={handleCopyPrompt}
+                onDownload={handleDownloadVideo}
+                onDelete={handleDeleteHistory}
+                onPreview={handlePreviewVideo}
+                colors={colors}
               />{' '}
             </div>{' '}
           </div>{' '}
