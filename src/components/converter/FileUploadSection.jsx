@@ -38,7 +38,7 @@ export const FileUploadSection = ({
                 ? colors.primary.main
                 : theme === 'dark'
                 ? '#555555'
-                : colors.primary.light,
+                : colors.secondary.dark,
               backgroundColor: isDragging
                 ? `${colors.primary.main}15`
                 : colors.background.hover,
