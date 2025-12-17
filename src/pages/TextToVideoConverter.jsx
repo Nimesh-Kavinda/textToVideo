@@ -793,29 +793,31 @@ export default function TextToVideoConverter() {
                       />
                     )}
 
-                    <BatchControls
-                      promptQueue={promptQueue}
-                      batchSettings={batchSettings}
-                      onBatchSettingChange={handleBatchSettingChange}
-                      onStartBatch={handleStartBatch}
-                      onPauseBatch={handlePauseBatch}
-                      onStopBatch={handleStopBatch}
-                      isProcessing={isBatchProcessing}
-                      isPaused={isPaused}
-                      currentProgress={currentProgress}
-                      colors={colors}
-                    />
-
-                    {promptQueue.length > 0 && (
-                      <PromptQueue
+                    <div id="prompt-queue" className="space-y-4">
+                      <BatchControls
                         promptQueue={promptQueue}
-                        onUpdatePrompt={updatePromptInQueue}
-                        onRemovePrompt={removePromptFromQueue}
-                        onRemovePrompts={removePromptsFromQueue}
+                        batchSettings={batchSettings}
+                        onBatchSettingChange={handleBatchSettingChange}
+                        onStartBatch={handleStartBatch}
+                        onPauseBatch={handlePauseBatch}
+                        onStopBatch={handleStopBatch}
+                        isProcessing={isBatchProcessing}
+                        isPaused={isPaused}
+                        currentProgress={currentProgress}
                         colors={colors}
-                        theme={theme}
                       />
-                    )}
+
+                      {promptQueue.length > 0 && (
+                        <PromptQueue
+                          promptQueue={promptQueue}
+                          onUpdatePrompt={updatePromptInQueue}
+                          onRemovePrompt={removePromptFromQueue}
+                          onRemovePrompts={removePromptsFromQueue}
+                          colors={colors}
+                          theme={theme}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
