@@ -1,4 +1,15 @@
 import React from 'react';
+import {
+  Volume2,
+  Clapperboard,
+  Zap,
+  Film,
+  Video,
+  Settings2,
+  RectangleHorizontal,
+  RectangleVertical,
+  Square,
+} from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -117,11 +128,33 @@ export const Settings = ({
             </label>
             <div className="grid grid-cols-5 gap-1 max-w-[320px]">
               {[
-                { value: '16:9', label: '16:9', icon: '▭' },
-                { value: '4:3', label: '4:3', icon: '▬' },
-                { value: '1:1', label: '1:1', icon: '□' },
-                { value: '3:4', label: '3:4', icon: '▯' },
-                { value: '9:16', label: '9:16', icon: '▮' },
+                {
+                  value: '16:9',
+                  label: '16:9',
+                  icon: <RectangleHorizontal className="w-3.5 h-3.5" />,
+                },
+                {
+                  value: '4:3',
+                  label: '4:3',
+                  icon: (
+                    <RectangleHorizontal className="w-3.5 h-3.5 scale-90" />
+                  ),
+                },
+                {
+                  value: '1:1',
+                  label: '1:1',
+                  icon: <Square className="w-3.5 h-3.5" />,
+                },
+                {
+                  value: '3:4',
+                  label: '3:4',
+                  icon: <RectangleVertical className="w-3.5 h-3.5 scale-90" />,
+                },
+                {
+                  value: '9:16',
+                  label: '9:16',
+                  icon: <RectangleVertical className="w-3.5 h-3.5" />,
+                },
               ].map((ratio) => (
                 <button
                   key={ratio.value}
@@ -142,7 +175,7 @@ export const Settings = ({
                         : colors.text.primary,
                   }}
                 >
-                  <span className="text-sm">{ratio.icon}</span>
+                  {ratio.icon}
                   <span className="hidden sm:inline">{ratio.label}</span>
                 </button>
               ))}
@@ -192,7 +225,7 @@ export const Settings = ({
                   className="w-6 h-6 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: colors.background.card }}
                 >
-                  <span className="text-xs">🔊</span>
+                  <Volume2 className="w-3.5 h-3.5" />
                 </div>
                 <label
                   className="text-xs font-medium"
@@ -225,7 +258,7 @@ export const Settings = ({
                   className="w-6 h-6 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: colors.background.card }}
                 >
-                  <span className="text-xs">🎬</span>
+                  <Clapperboard className="w-3.5 h-3.5" />
                 </div>
                 <label
                   className="text-xs font-medium"
@@ -258,7 +291,7 @@ export const Settings = ({
                   className="w-6 h-6 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: colors.background.card }}
                 >
-                  <span className="text-xs">⚡</span>
+                  <Zap className="w-3.5 h-3.5" />
                 </div>
                 <label
                   className="text-xs font-medium"
@@ -297,7 +330,7 @@ export const Settings = ({
                   color: colors.text.secondary,
                 }}
               >
-                <span className="text-sm">🎬</span>
+                <Film className="w-3.5 h-3.5" />
                 <span className="text-[10px] font-medium">Motion</span>
               </button>
               <button
@@ -308,7 +341,7 @@ export const Settings = ({
                   color: colors.text.secondary,
                 }}
               >
-                <span className="text-sm">🎥</span>
+                <Video className="w-3.5 h-3.5" />
                 <span className="text-[10px] font-medium">Video</span>
               </button>
             </div>
@@ -320,7 +353,7 @@ export const Settings = ({
                 color: colors.text.secondary,
               }}
             >
-              <span className="text-sm">⚙️</span>
+              <Settings2 className="w-3.5 h-3.5" />
               <span className="text-[10px] font-medium">More Settings</span>
             </button>
           </div>
