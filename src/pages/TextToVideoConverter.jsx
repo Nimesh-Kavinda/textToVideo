@@ -493,6 +493,12 @@ export default function TextToVideoConverter() {
     setGenerationHistory((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleDeleteHistoryItems = (ids) => {
+    setGenerationHistory((prev) =>
+      prev.filter((item) => !ids.includes(item.id))
+    );
+  };
+
   const handlePreviewVideo = (historyItem) => {
     // Implement preview logic
     console.log('Preview video:', historyItem);
@@ -790,6 +796,7 @@ export default function TextToVideoConverter() {
                   onCopyPrompt={handleCopyPrompt}
                   onDownload={handleDownloadVideo}
                   onDelete={handleDeleteHistory}
+                  onDeleteItems={handleDeleteHistoryItems}
                   onPreview={(video) => {
                     setSelectedVideo(video);
                   }}

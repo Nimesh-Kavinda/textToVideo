@@ -9,11 +9,13 @@ import {
   Filter,
   Calendar,
   Clock,
+  Video,
 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
+import { Checkbox } from '../ui/checkbox';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Select,
@@ -28,12 +30,14 @@ export const HistoryPanel = ({
   onCopyPrompt,
   onDownload,
   onDelete,
+  onDeleteItems,
   onPreview,
   colors,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  const [selectedItems, setSelectedItems] = useState([]);
 
   // Filter and sort history
   const filteredHistory = history
@@ -50,6 +54,27 @@ export const HistoryPanel = ({
       if (sortBy === 'oldest') return new Date(a.date) - new Date(b.date);
       return 0;
     });
+
+  const toggleSelection = (id) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.length === filteredHistory.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(filteredHistory.map((item) => item.id));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (onDeleteItems) {
+      onDeleteItems(selectedItems);
+      setSelectedItems([]);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -131,6 +156,39 @@ export const HistoryPanel = ({
               </p>
             </div>
           </div>
+
+          {/* Bulk Actions */}
+          {history.length > 0 && (
+            <div className="flex items-center gap-3">
+              {selectedItems.length > 0 && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleBulkDelete}
+                  className="h-8 text-xs"
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                  Delete ({selectedItems.length})
+                </Button>
+              )}
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={
+                    filteredHistory.length > 0 &&
+                    selectedItems.length === filteredHistory.length
+                  }
+                  onCheckedChange={toggleSelectAll}
+                  colors={colors}
+                />
+                <span
+                  className="text-xs"
+                  style={{ color: colors.text.secondary }}
+                >
+                  Select All
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Search and Filters */}
@@ -223,152 +281,190 @@ export const HistoryPanel = ({
                     className="rounded-lg border p-4 transition-all hover:shadow-md"
                     style={{
                       backgroundColor: colors.background.hover,
-                      borderColor: colors.border.main,
+                      borderColor: selectedItems.includes(item.id)
+                        ? colors.primary.main
+                        : colors.border.main,
                     }}
                   >
-                    {/* Header with Status */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant="outline"
-                          className="text-xs capitalize"
-                          style={{
-                            backgroundColor: statusColors.bg,
-                            color: statusColors.text,
-                            borderColor: statusColors.border,
-                          }}
-                        >
-                          {item.status}
-                        </Badge>
-                        <span
-                          className="text-xs"
-                          style={{ color: colors.text.tertiary }}
-                        >
-                          <Clock className="w-3 h-3 inline mr-1" />
-                          {formatDate(item.date)}
-                        </span>
+                    <div className="flex gap-4">
+                      {/* Checkbox */}
+                      <div className="pt-1">
+                        <Checkbox
+                          checked={selectedItems.includes(item.id)}
+                          onCheckedChange={() => toggleSelection(item.id)}
+                          colors={colors}
+                        />
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onDelete(item.id)}
-                        className="h-7 w-7"
-                        style={{ color: colors.status.error }}
+
+                      {/* Thumbnail */}
+                      <div
+                        className="w-24 h-24 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center"
+                        style={{
+                          backgroundColor: colors.background.card,
+                          border: `1px solid ${colors.border.main}`,
+                        }}
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
+                        {item.thumbnail ? (
+                          <img
+                            src={item.thumbnail}
+                            alt="Thumbnail"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Video
+                            className="w-8 h-8 opacity-50"
+                            style={{ color: colors.text.tertiary }}
+                          />
+                        )}
+                      </div>
 
-                    {/* Prompt Text */}
-                    <p
-                      className="text-sm mb-3 line-clamp-2"
-                      style={{ color: colors.text.primary }}
-                    >
-                      {item.prompt}
-                    </p>
-
-                    {/* Metadata */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {item.duration && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs"
-                          style={{
-                            backgroundColor: colors.background.card,
-                            borderColor: colors.border.main,
-                            color: colors.text.secondary,
-                          }}
-                        >
-                          {item.duration}
-                        </Badge>
-                      )}
-                      {item.resolution && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs"
-                          style={{
-                            backgroundColor: colors.background.card,
-                            borderColor: colors.border.main,
-                            color: colors.text.secondary,
-                          }}
-                        >
-                          {item.resolution}
-                        </Badge>
-                      )}
-                      {item.fps && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs"
-                          style={{
-                            backgroundColor: colors.background.card,
-                            borderColor: colors.border.main,
-                            color: colors.text.secondary,
-                          }}
-                        >
-                          {item.fps} FPS
-                        </Badge>
-                      )}
-                      {item.fileSize && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs"
-                          style={{
-                            backgroundColor: colors.background.card,
-                            borderColor: colors.border.main,
-                            color: colors.text.secondary,
-                          }}
-                        >
-                          {item.fileSize}
-                        </Badge>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="grid grid-cols-3 gap-2">
-                      {item.status === 'completed' && (
-                        <>
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        {/* Header with Status */}
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant="outline"
+                              className="text-xs capitalize"
+                              style={{
+                                backgroundColor: statusColors.bg,
+                                color: statusColors.text,
+                                borderColor: statusColors.border,
+                              }}
+                            >
+                              {item.status}
+                            </Badge>
+                            <span
+                              className="text-xs"
+                              style={{ color: colors.text.tertiary }}
+                            >
+                              <Clock className="w-3 h-3 inline mr-1" />
+                              {formatDate(item.date)}
+                            </span>
+                          </div>
                           <Button
-                            size="sm"
-                            onClick={() => onPreview(item)}
-                            className="h-8 text-xs"
-                            style={{
-                              background: colors.primary.gradient,
-                              color: colors.text.white,
-                            }}
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => onDelete(item.id)}
+                            className="h-7 w-7"
+                            style={{ color: colors.status.error }}
                           >
-                            <Play className="w-3 h-3 mr-1" />
-                            Play
+                            <Trash2 className="w-3.5 h-3.5" />
                           </Button>
+                        </div>
+
+                        {/* Prompt Text */}
+                        <p
+                          className="text-sm mb-3 line-clamp-2"
+                          style={{ color: colors.text.primary }}
+                        >
+                          {item.prompt}
+                        </p>
+
+                        {/* Metadata */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {item.duration && (
+                            <Badge
+                              variant="outline"
+                              className="text-xs"
+                              style={{
+                                backgroundColor: colors.background.card,
+                                borderColor: colors.border.main,
+                                color: colors.text.secondary,
+                              }}
+                            >
+                              {item.duration}
+                            </Badge>
+                          )}
+                          {item.resolution && (
+                            <Badge
+                              variant="outline"
+                              className="text-xs"
+                              style={{
+                                backgroundColor: colors.background.card,
+                                borderColor: colors.border.main,
+                                color: colors.text.secondary,
+                              }}
+                            >
+                              {item.resolution}
+                            </Badge>
+                          )}
+                          {item.fps && (
+                            <Badge
+                              variant="outline"
+                              className="text-xs"
+                              style={{
+                                backgroundColor: colors.background.card,
+                                borderColor: colors.border.main,
+                                color: colors.text.secondary,
+                              }}
+                            >
+                              {item.fps} FPS
+                            </Badge>
+                          )}
+                          {item.fileSize && (
+                            <Badge
+                              variant="outline"
+                              className="text-xs"
+                              style={{
+                                backgroundColor: colors.background.card,
+                                borderColor: colors.border.main,
+                                color: colors.text.secondary,
+                              }}
+                            >
+                              {item.fileSize}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          {item.status === 'completed' && (
+                            <>
+                              <Button
+                                size="sm"
+                                onClick={() => onPreview(item)}
+                                className="h-8 text-xs flex-1"
+                                style={{
+                                  background: colors.primary.gradient,
+                                  color: colors.text.white,
+                                }}
+                              >
+                                <Play className="w-3 h-3 mr-1" />
+                                Play
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => onDownload(item)}
+                                className="h-8 text-xs flex-1"
+                                style={{
+                                  backgroundColor: colors.background.card,
+                                  borderColor: colors.border.main,
+                                  color: colors.text.primary,
+                                }}
+                              >
+                                <Download className="w-3 h-3 mr-1" />
+                                Download
+                              </Button>
+                            </>
+                          )}
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => onDownload(item)}
-                            className="h-8 text-xs"
+                            onClick={() => onCopyPrompt(item.prompt)}
+                            className="h-8 text-xs flex-1"
                             style={{
                               backgroundColor: colors.background.card,
                               borderColor: colors.border.main,
                               color: colors.text.primary,
                             }}
                           >
-                            <Download className="w-3 h-3 mr-1" />
-                            Download
+                            <Copy className="w-3 h-3 mr-1" />
+                            Copy
                           </Button>
-                        </>
-                      )}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => onCopyPrompt(item.prompt)}
-                        className="h-8 text-xs"
-                        style={{
-                          backgroundColor: colors.background.card,
-                          borderColor: colors.border.main,
-                          color: colors.text.primary,
-                        }}
-                      >
-                        <Copy className="w-3 h-3 mr-1" />
-                        Copy
-                      </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
