@@ -35,6 +35,7 @@ export default function TextToVideoConverter() {
   const [sidebarTab, setSidebarTab] = useState('prompts');
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [promptTab, setPromptTab] = useState('text');
 
   // Batch processing state
   const [promptQueue, setPromptQueue] = useState([]);
@@ -622,45 +623,98 @@ export default function TextToVideoConverter() {
                     backgroundColor: colors.background.card,
                   }}
                 >
-                  <h2
-                    className="text-xl font-bold mb-1"
-                    style={{ color: colors.text.primary }}
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h2
+                        className="text-xl font-bold mb-1"
+                        style={{ color: colors.text.primary }}
+                      >
+                        Prompt Manager
+                      </h2>
+                      <p
+                        className="text-sm"
+                        style={{ color: colors.text.secondary }}
+                      >
+                        Create or upload prompts for generation
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Tabs */}
+                  <div
+                    className="flex p-1 rounded-lg w-fit"
+                    style={{ backgroundColor: colors.background.hover }}
                   >
-                    Prompt Manager
-                  </h2>
-                  <p
-                    className="text-sm"
-                    style={{ color: colors.text.secondary }}
-                  >
-                    Upload or paste multiple prompts for batch generation
-                  </p>
+                    <button
+                      onClick={() => setPromptTab('text')}
+                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all`}
+                      style={{
+                        backgroundColor:
+                          promptTab === 'text'
+                            ? colors.background.card
+                            : 'transparent',
+                        color:
+                          promptTab === 'text'
+                            ? colors.text.primary
+                            : colors.text.secondary,
+                        boxShadow:
+                          promptTab === 'text'
+                            ? '0 1px 2px rgba(0,0,0,0.1)'
+                            : 'none',
+                      }}
+                    >
+                      Text Input
+                    </button>
+                    <button
+                      onClick={() => setPromptTab('upload')}
+                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all`}
+                      style={{
+                        backgroundColor:
+                          promptTab === 'upload'
+                            ? colors.background.card
+                            : 'transparent',
+                        color:
+                          promptTab === 'upload'
+                            ? colors.text.primary
+                            : colors.text.secondary,
+                        boxShadow:
+                          promptTab === 'upload'
+                            ? '0 1px 2px rgba(0,0,0,0.1)'
+                            : 'none',
+                      }}
+                    >
+                      File Upload
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
                   <div className="space-y-4">
-                    <PromptSection
-                      prompt={prompt}
-                      onPromptChange={setPrompt}
-                      onGenerate={handleGenerate}
-                      onLoadPrompts={handleLoadPromptsFromText}
-                      isGenerating={isGenerating}
-                      uploadedFilesCount={uploadedFiles.length}
-                      colors={colors}
-                    />
-
-                    <FileUploadSection
-                      uploadedFiles={uploadedFiles}
-                      isDragging={isDragging}
-                      onDragOver={handleDragOver}
-                      onDrop={handleDrop}
-                      onDragLeave={() => setIsDragging(false)}
-                      onFileUpload={handleFileUpload}
-                      onRemoveFile={removeFile}
-                      onFileClick={handleFileClick}
-                      onLoadPrompts={handleLoadPromptsFromText}
-                      colors={colors}
-                      theme={theme}
-                    />
+                    {promptTab === 'text' ? (
+                      <PromptSection
+                        prompt={prompt}
+                        onPromptChange={setPrompt}
+                        onGenerate={handleGenerate}
+                        onLoadPrompts={handleLoadPromptsFromText}
+                        isGenerating={isGenerating}
+                        uploadedFilesCount={uploadedFiles.length}
+                        colors={colors}
+                      />
+                    ) : (
+                      <FileUploadSection
+                        uploadedFiles={uploadedFiles}
+                        isDragging={isDragging}
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
+                        onDragLeave={() => setIsDragging(false)}
+                        onFileUpload={handleFileUpload}
+                        onRemoveFile={removeFile}
+                        onFileClick={handleFileClick}
+                        onLoadPrompts={handleLoadPromptsFromText}
+                        colors={colors}
+                        theme={theme}
+                      />
+                    )}
 
                     <BatchControls
                       promptQueue={promptQueue}
