@@ -18,6 +18,7 @@ import {
   GeneratedVideosGallery,
   HistoryPanel,
   VideoPreview,
+  PromptLibrary,
 } from '../components/converter';
 
 export default function TextToVideoConverter() {
@@ -582,6 +583,11 @@ export default function TextToVideoConverter() {
     setIsSettingsOpen(true);
   };
 
+  const handleUsePrompt = (promptText) => {
+    setPrompt(promptText);
+    setPromptTab('text');
+  };
+
   return (
     <div
       className="h-screen flex overflow-hidden"
@@ -689,12 +695,32 @@ export default function TextToVideoConverter() {
                     >
                       File Upload
                     </button>
+                    <button
+                      onClick={() => setPromptTab('library')}
+                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all`}
+                      style={{
+                        backgroundColor:
+                          promptTab === 'library'
+                            ? colors.background.card
+                            : 'transparent',
+                        color:
+                          promptTab === 'library'
+                            ? colors.text.primary
+                            : colors.text.secondary,
+                        boxShadow:
+                          promptTab === 'library'
+                            ? '0 1px 2px rgba(0,0,0,0.1)'
+                            : 'none',
+                      }}
+                    >
+                      Prompt Library
+                    </button>
                   </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
                   <div className="space-y-4">
-                    {promptTab === 'text' ? (
+                    {promptTab === 'text' && (
                       <PromptSection
                         prompt={prompt}
                         onPromptChange={setPrompt}
@@ -704,7 +730,9 @@ export default function TextToVideoConverter() {
                         uploadedFilesCount={uploadedFiles.length}
                         colors={colors}
                       />
-                    ) : (
+                    )}
+
+                    {promptTab === 'upload' && (
                       <FileUploadSection
                         uploadedFiles={uploadedFiles}
                         isDragging={isDragging}
@@ -717,6 +745,13 @@ export default function TextToVideoConverter() {
                         onLoadPrompts={handleLoadPromptsFromText}
                         colors={colors}
                         theme={theme}
+                      />
+                    )}
+
+                    {promptTab === 'library' && (
+                      <PromptLibrary
+                        onUsePrompt={handleUsePrompt}
+                        colors={colors}
                       />
                     )}
 

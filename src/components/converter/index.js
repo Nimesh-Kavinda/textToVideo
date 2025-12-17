@@ -10,3 +10,4 @@ export { BatchControls } from './BatchControls';
 export { HistoryPanel } from './HistoryPanel';
 export { GeneratedVideosGallery } from './GeneratedVideosGallery';
 export { Sidebar } from './Sidebar';
+export { PromptLibrary } from './PromptLibrary';
