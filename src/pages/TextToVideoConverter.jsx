@@ -588,7 +588,7 @@ export default function TextToVideoConverter() {
         background: colors.background.page,
       }}
     >
-      <AnnouncementBanner colors={colors} />
+      {/* <AnnouncementBanner colors={colors} /> */}
       <Header
         theme={theme}
         toggleTheme={toggleTheme}
