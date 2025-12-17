@@ -49,7 +49,7 @@ export const Header = ({
         <div className="flex items-center justify-between">
           {/* Left Section - Hidden on mobile */}
           <div className="hidden md:flex items-center gap-4">
-            <Button
+            {/* <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate('/')}
@@ -61,7 +61,7 @@ export const Header = ({
                 className="w-4 h-4 mr-1"
                 style={{ color: colors.icon.secondary }}
               />
-            </Button>
+            </Button> */}
             <div
               className={`flex items-center gap-2 transition-all duration-500 ease-in-out overflow-hidden ${
                 showLogo

@@ -707,7 +707,7 @@ export default function TextToVideoConverter() {
             {sidebarTab === 'settings' && (
               <div className="h-full p-6 overflow-y-auto">
                 <div className="max-w-3xl mx-auto">
-                  <SettingsSidebar
+                  <Settings
                     settings={settings}
                     onSettingChange={handleSettingChange}
                     colors={colors}
