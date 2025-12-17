@@ -26,15 +26,15 @@ export const Settings = ({
           borderColor: colors.border.main,
         }}
       >
-        <div className="p-4 space-y-4">
+        <div className="p-3 space-y-3">
           {/* Model Selection */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
-              className="text-sm font-medium flex items-center justify-between"
+              className="text-xs font-medium flex items-center justify-between"
               style={{ color: colors.text.primary }}
             >
               Model
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-[10px] h-4 px-1">
                 V5.5
               </Badge>
             </label>
@@ -43,7 +43,7 @@ export const Settings = ({
               onValueChange={(value) => onSettingChange('model', value)}
             >
               <SelectTrigger
-                className="h-9 text-sm"
+                className="h-8 text-xs"
                 style={{
                   backgroundColor: colors.background.input,
                   borderColor: colors.border.main,
@@ -58,22 +58,28 @@ export const Settings = ({
                   borderColor: colors.border.main,
                 }}
               >
-                <SelectItem value="standard">Motion 2.0 Fast</SelectItem>
-                <SelectItem value="premium">Motion 2.0 Quality</SelectItem>
-                <SelectItem value="ultra">Motion 2.0 Ultra</SelectItem>
+                <SelectItem value="standard" className="text-xs">
+                  Motion 2.0 Fast
+                </SelectItem>
+                <SelectItem value="premium" className="text-xs">
+                  Motion 2.0 Quality
+                </SelectItem>
+                <SelectItem value="ultra" className="text-xs">
+                  Motion 2.0 Ultra
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Duration */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
-              className="text-sm font-medium"
+              className="text-xs font-medium"
               style={{ color: colors.text.primary }}
             >
               Duration
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex gap-2">
               {['5s', '8s', '10s'].map((duration) => (
                 <Button
                   key={duration}
@@ -82,7 +88,7 @@ export const Settings = ({
                   }
                   size="sm"
                   onClick={() => onSettingChange('duration', duration)}
-                  className="h-8 text-sm font-medium border-0"
+                  className="h-7 text-xs font-medium border-0 flex-1 max-w-[80px]"
                   style={{
                     background:
                       settings.duration === duration
@@ -102,14 +108,14 @@ export const Settings = ({
           </div>
 
           {/* Ratio */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
-              className="text-sm font-medium"
+              className="text-xs font-medium"
               style={{ color: colors.text.primary }}
             >
               Ratio
             </label>
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="grid grid-cols-5 gap-1 max-w-[320px]">
               {[
                 { value: '16:9', label: '16:9', icon: '▭' },
                 { value: '4:3', label: '4:3', icon: '▬' },
@@ -120,7 +126,7 @@ export const Settings = ({
                 <button
                   key={ratio.value}
                   onClick={() => onSettingChange('aspectRatio', ratio.value)}
-                  className="h-14 flex flex-col items-center justify-center gap-1 rounded-md border text-xs font-medium transition-all"
+                  className="h-9 flex items-center justify-center gap-1 rounded-md border text-[10px] font-medium transition-all"
                   style={{
                     background:
                       settings.aspectRatio === ratio.value
@@ -136,27 +142,27 @@ export const Settings = ({
                         : colors.text.primary,
                   }}
                 >
-                  <span className="text-lg">{ratio.icon}</span>
-                  <span>{ratio.label}</span>
+                  <span className="text-sm">{ratio.icon}</span>
+                  <span className="hidden sm:inline">{ratio.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Resolution */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
-              className="text-sm font-medium"
+              className="text-xs font-medium"
               style={{ color: colors.text.primary }}
             >
               Resolution
             </label>
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="flex gap-2 flex-wrap">
               {['360P', '540P', '720P', '1080P'].map((res) => (
                 <button
                   key={res}
                   onClick={() => onSettingChange('resolution', res)}
-                  className="h-8 rounded-md text-xs font-medium transition-all border"
+                  className="h-7 px-3 rounded-md text-[10px] font-medium transition-all border min-w-[60px]"
                   style={{
                     background:
                       settings.resolution === res
@@ -176,29 +182,33 @@ export const Settings = ({
           </div>
 
           {/* Toggle Options */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-2 pt-1">
             <div
-              className="flex items-center justify-between p-3 rounded-lg"
+              className="flex items-center justify-between p-2 rounded-lg"
               style={{ backgroundColor: colors.background.hover }}
             >
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  className="w-6 h-6 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: colors.background.card }}
                 >
-                  <span className="text-sm">🔊</span>
+                  <span className="text-xs">🔊</span>
                 </div>
                 <label
-                  className="text-sm font-medium"
+                  className="text-xs font-medium"
                   style={{ color: colors.text.primary }}
                 >
                   Audio
-                  <Badge variant="outline" className="ml-2 text-xs">
+                  <Badge
+                    variant="outline"
+                    className="ml-1.5 text-[10px] h-4 px-1"
+                  >
                     New
                   </Badge>
                 </label>
               </div>
               <Switch
+                className="scale-75 origin-right"
                 checked={settings.enableAudio}
                 onCheckedChange={(checked) =>
                   onSettingChange('enableAudio', checked)
@@ -207,27 +217,31 @@ export const Settings = ({
             </div>
 
             <div
-              className="flex items-center justify-between p-3 rounded-lg"
+              className="flex items-center justify-between p-2 rounded-lg"
               style={{ backgroundColor: colors.background.hover }}
             >
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  className="w-6 h-6 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: colors.background.card }}
                 >
-                  <span className="text-sm">🎬</span>
+                  <span className="text-xs">🎬</span>
                 </div>
                 <label
-                  className="text-sm font-medium"
+                  className="text-xs font-medium"
                   style={{ color: colors.text.primary }}
                 >
                   Multi-Shot
-                  <Badge variant="outline" className="ml-2 text-xs">
+                  <Badge
+                    variant="outline"
+                    className="ml-1.5 text-[10px] h-4 px-1"
+                  >
                     New
                   </Badge>
                 </label>
               </div>
               <Switch
+                className="scale-75 origin-right"
                 checked={settings.multiShot}
                 onCheckedChange={(checked) =>
                   onSettingChange('multiShot', checked)
@@ -236,24 +250,25 @@ export const Settings = ({
             </div>
 
             <div
-              className="flex items-center justify-between p-3 rounded-lg"
+              className="flex items-center justify-between p-2 rounded-lg"
               style={{ backgroundColor: colors.background.hover }}
             >
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  className="w-6 h-6 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: colors.background.card }}
                 >
-                  <span className="text-sm">⚡</span>
+                  <span className="text-xs">⚡</span>
                 </div>
                 <label
-                  className="text-sm font-medium"
+                  className="text-xs font-medium"
                   style={{ color: colors.text.primary }}
                 >
                   Preview Mode
                 </label>
               </div>
               <Switch
+                className="scale-75 origin-right"
                 checked={settings.previewMode}
                 onCheckedChange={(checked) =>
                   onSettingChange('previewMode', checked)
@@ -264,50 +279,50 @@ export const Settings = ({
 
           {/* Advanced Settings Quick Access */}
           <div
-            className="pt-3 mt-3 border-t"
+            className="pt-2 mt-2 border-t"
             style={{ borderColor: colors.border.main }}
           >
             <label
-              className="text-sm font-medium mb-3 block"
+              className="text-xs font-medium mb-2 block"
               style={{ color: colors.text.primary }}
             >
               Advanced Settings
             </label>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => onOpenAdvancedSettings('motion')}
-                className="w-full flex items-center gap-2 p-2.5 rounded-lg transition-all hover:scale-[1.02]"
+                className="flex items-center justify-center gap-1.5 p-2 rounded-lg transition-all hover:scale-[1.02]"
                 style={{
                   backgroundColor: colors.background.hover,
                   color: colors.text.secondary,
                 }}
               >
-                <span className="text-base">🎬</span>
-                <span className="text-xs font-medium">Motion Control</span>
+                <span className="text-sm">🎬</span>
+                <span className="text-[10px] font-medium">Motion</span>
               </button>
               <button
                 onClick={() => onOpenAdvancedSettings('video')}
-                className="w-full flex items-center gap-2 p-2.5 rounded-lg transition-all hover:scale-[1.02]"
+                className="flex items-center justify-center gap-1.5 p-2 rounded-lg transition-all hover:scale-[1.02]"
                 style={{
                   backgroundColor: colors.background.hover,
                   color: colors.text.secondary,
                 }}
               >
-                <span className="text-base">🎥</span>
-                <span className="text-xs font-medium">Video Settings</span>
-              </button>
-              <button
-                onClick={() => onOpenAdvancedSettings('advanced')}
-                className="w-full flex items-center gap-2 p-2.5 rounded-lg transition-all hover:scale-[1.02]"
-                style={{
-                  backgroundColor: colors.background.hover,
-                  color: colors.text.secondary,
-                }}
-              >
-                <span className="text-base">⚙️</span>
-                <span className="text-xs font-medium">Advanced Options</span>
+                <span className="text-sm">🎥</span>
+                <span className="text-[10px] font-medium">Video</span>
               </button>
             </div>
+            <button
+              onClick={() => onOpenAdvancedSettings('advanced')}
+              className="w-full mt-2 flex items-center justify-center gap-1.5 p-2 rounded-lg transition-all hover:scale-[1.02]"
+              style={{
+                backgroundColor: colors.background.hover,
+                color: colors.text.secondary,
+              }}
+            >
+              <span className="text-sm">⚙️</span>
+              <span className="text-[10px] font-medium">More Settings</span>
+            </button>
           </div>
         </div>
       </div>
