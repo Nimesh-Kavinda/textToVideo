@@ -37,6 +37,38 @@ export default function TextToVideoConverter() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [promptTab, setPromptTab] = useState('text');
+  const [rightPanelWidth, setRightPanelWidth] = useState(400);
+  const [isResizing, setIsResizing] = useState(false);
+
+  // Handle resizing
+  const startResizing = (e) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  React.useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isResizing) return;
+      const newWidth = window.innerWidth - e.clientX;
+      if (newWidth > 300 && newWidth < 800) {
+        setRightPanelWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   // Batch processing state
   const [promptQueue, setPromptQueue] = useState([]);
@@ -621,10 +653,10 @@ export default function TextToVideoConverter() {
           showLogo={isSidebarCollapsed}
         />
 
-        <div className="flex-1 grid grid-cols-10 gap-0 overflow-hidden">
-          {/* Middle Content - 6 cols */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Middle Content */}
           <div
-            className="col-span-6 overflow-hidden relative border-r"
+            className="flex-1 overflow-hidden relative border-r min-w-0"
             style={{
               backgroundColor: colors.background.main,
               borderColor: colors.border.main,
@@ -819,10 +851,20 @@ export default function TextToVideoConverter() {
             )}
           </div>
 
-          {/* Right Sidebar - Generated Images - 4 cols */}
+          {/* Resizer Handle */}
           <div
-            className="col-span-4 flex flex-col h-full overflow-hidden"
-            style={{ backgroundColor: colors.background.card }}
+            className="w-1 cursor-col-resize hover:bg-blue-500 transition-colors flex-shrink-0 z-10"
+            style={{ backgroundColor: colors.border.main }}
+            onMouseDown={startResizing}
+          />
+
+          {/* Right Sidebar - Generated Images */}
+          <div
+            className="flex flex-col h-full overflow-hidden flex-shrink-0"
+            style={{
+              width: rightPanelWidth,
+              backgroundColor: colors.background.card,
+            }}
           >
             <div
               className="p-6 border-b flex justify-between items-end"

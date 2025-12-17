@@ -13,6 +13,7 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
+import { Checkbox } from '../ui/checkbox';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Select,
@@ -27,6 +28,7 @@ export const GeneratedVideosGallery = ({
   onCopyPrompt,
   onDownload,
   onDelete,
+  onDeleteItems,
   colors,
   isGenerating,
   currentGenerating,
@@ -34,6 +36,7 @@ export const GeneratedVideosGallery = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   // Filter videos
   const filteredVideos = videos.filter((video) => {
@@ -44,6 +47,36 @@ export const GeneratedVideosGallery = ({
       filterStatus === 'all' || video.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
+
+  const toggleSelection = (id) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.length === filteredVideos.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(filteredVideos.map((item) => item.id));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (onDeleteItems) {
+      onDeleteItems(selectedItems);
+      setSelectedItems([]);
+    }
+  };
+
+  const handleBulkDownload = () => {
+    const selectedVideos = videos.filter((v) => selectedItems.includes(v.id));
+    selectedVideos.forEach((video) => {
+      if (video.status === 'completed') {
+        onDownload(video);
+      }
+    });
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -84,20 +117,65 @@ export const GeneratedVideosGallery = ({
     >
       <div className="p-4 lg:p-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h3
-              className="font-semibold text-lg lg:text-xl"
-              style={{ color: colors.text.primary }}
-            >
-              Generated Videos
-            </h3>
-            <p
-              className="text-xs lg:text-sm mt-1"
-              style={{ color: colors.text.tertiary }}
-            >
-              {videos.length} {videos.length === 1 ? 'video' : 'videos'} total
-            </p>
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3
+                className="font-semibold text-lg lg:text-xl"
+                style={{ color: colors.text.primary }}
+              >
+                Generated Videos
+              </h3>
+              <p
+                className="text-xs lg:text-sm mt-1"
+                style={{ color: colors.text.tertiary }}
+              >
+                {videos.length} {videos.length === 1 ? 'video' : 'videos'} total
+              </p>
+            </div>
+
+            {videos.length > 0 && (
+              <div className="flex items-center gap-3">
+                {selectedItems.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleBulkDownload}
+                      className="h-8 text-xs"
+                    >
+                      <Download className="w-3.5 h-3.5 mr-1.5" />
+                      Download ({selectedItems.length})
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleBulkDelete}
+                      className="h-8 text-xs"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                      Delete ({selectedItems.length})
+                    </Button>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 ml-2">
+                  <Checkbox
+                    checked={
+                      filteredVideos.length > 0 &&
+                      selectedItems.length === filteredVideos.length
+                    }
+                    onCheckedChange={toggleSelectAll}
+                    colors={colors}
+                  />
+                  <span
+                    className="text-xs"
+                    style={{ color: colors.text.secondary }}
+                  >
+                    Select All
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {videos.length > 0 && (
@@ -197,7 +275,12 @@ export const GeneratedVideosGallery = ({
 
         {/* Video Gallery Grid */}
         {filteredVideos.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div
+            className="grid gap-4"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            }}
+          >
             <AnimatePresence>
               {filteredVideos.map((video) => {
                 const statusColors = getStatusColor(video.status);
@@ -211,12 +294,24 @@ export const GeneratedVideosGallery = ({
                     transition={{ duration: 0.2 }}
                   >
                     <div
-                      className="rounded-lg border overflow-hidden transition-all hover:shadow-lg group"
+                      className="rounded-lg border overflow-hidden transition-all hover:shadow-lg group relative flex flex-col h-full"
                       style={{
                         backgroundColor: colors.background.hover,
-                        borderColor: colors.border.main,
+                        borderColor: selectedItems.includes(video.id)
+                          ? colors.primary.main
+                          : colors.border.main,
                       }}
                     >
+                      {/* Selection Checkbox */}
+                      <div className="absolute top-2 left-2 z-20">
+                        <Checkbox
+                          checked={selectedItems.includes(video.id)}
+                          onCheckedChange={() => toggleSelection(video.id)}
+                          colors={colors}
+                          className="bg-black/50 border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        />
+                      </div>
+
                       {/* Video Preview Thumbnail */}
                       <div
                         className="relative aspect-video cursor-pointer overflow-hidden"
@@ -225,25 +320,32 @@ export const GeneratedVideosGallery = ({
                       >
                         {video.status === 'completed' ? (
                           <>
-                            {/* Placeholder for video thumbnail - replace with actual video thumbnail */}
+                            {/* Placeholder for video thumbnail */}
                             <div
                               className="absolute inset-0 flex items-center justify-center"
                               style={{
                                 background: `linear-gradient(135deg, ${colors.primary.main}20, ${colors.secondary.main}20)`,
+                                backgroundImage: video.thumbnail
+                                  ? `url(${video.thumbnail})`
+                                  : `linear-gradient(135deg, ${colors.primary.main}20, ${colors.secondary.main}20)`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
                               }}
                             >
-                              <div className="text-center">
-                                <Play
-                                  className="w-12 h-12 mx-auto mb-2 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all"
-                                  style={{ color: colors.text.white }}
-                                />
-                                <p
-                                  className="text-xs font-medium"
-                                  style={{ color: colors.text.white }}
-                                >
-                                  {video.duration} • {video.resolution}
-                                </p>
-                              </div>
+                              {!video.thumbnail && (
+                                <div className="text-center">
+                                  <Play
+                                    className="w-12 h-12 mx-auto mb-2 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all"
+                                    style={{ color: colors.text.white }}
+                                  />
+                                  <p
+                                    className="text-xs font-medium"
+                                    style={{ color: colors.text.white }}
+                                  >
+                                    {video.duration} • {video.resolution}
+                                  </p>
+                                </div>
+                              )}
                             </div>
                             {/* Hover overlay */}
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
@@ -304,7 +406,7 @@ export const GeneratedVideosGallery = ({
                       </div>
 
                       {/* Video Info */}
-                      <div className="p-3">
+                      <div className="p-3 flex flex-col flex-1">
                         <p
                           className="text-sm font-medium mb-2 line-clamp-2 min-h-[2.5rem]"
                           style={{ color: colors.text.primary }}
@@ -317,7 +419,7 @@ export const GeneratedVideosGallery = ({
                           {video.fps && (
                             <Badge
                               variant="outline"
-                              className="text-xs"
+                              className="text-[10px] h-5 px-1.5"
                               style={{
                                 backgroundColor: colors.background.card,
                                 borderColor: colors.border.main,
@@ -330,7 +432,7 @@ export const GeneratedVideosGallery = ({
                           {video.fileSize && (
                             <Badge
                               variant="outline"
-                              className="text-xs"
+                              className="text-[10px] h-5 px-1.5"
                               style={{
                                 backgroundColor: colors.background.card,
                                 borderColor: colors.border.main,
@@ -343,13 +445,13 @@ export const GeneratedVideosGallery = ({
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="mt-auto grid grid-cols-3 gap-1.5">
                           {video.status === 'completed' && (
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => onDownload(video)}
-                              className="h-8 text-xs px-2"
+                              className="h-7 text-[10px] px-1 w-full"
                               style={{
                                 backgroundColor: colors.background.card,
                                 borderColor: colors.border.main,
@@ -365,7 +467,7 @@ export const GeneratedVideosGallery = ({
                             size="sm"
                             variant="outline"
                             onClick={() => onCopyPrompt(video.prompt)}
-                            className="h-8 text-xs px-2"
+                            className="h-7 text-[10px] px-1 w-full"
                             style={{
                               backgroundColor: colors.background.card,
                               borderColor: colors.border.main,
@@ -381,11 +483,11 @@ export const GeneratedVideosGallery = ({
                               size="sm"
                               variant="ghost"
                               onClick={() => onDelete(video.id)}
-                              className="h-8 text-xs px-2"
+                              className="h-7 text-[10px] px-1 w-full"
                               style={{ color: colors.status.error }}
                             >
                               <Trash2 className="w-3 h-3 mr-1" />
-                              Delete
+                              Del
                             </Button>
                           )}
                         </div>
