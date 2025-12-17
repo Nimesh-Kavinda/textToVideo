@@ -661,11 +661,11 @@ export default function TextToVideoConverter() {
                       style={{
                         backgroundColor:
                           promptTab === 'text'
-                            ? colors.background.card
+                            ? colors.primary.main
                             : 'transparent',
                         color:
                           promptTab === 'text'
-                            ? colors.text.primary
+                            ? colors.text.white
                             : colors.text.secondary,
                         boxShadow:
                           promptTab === 'text'
@@ -681,11 +681,11 @@ export default function TextToVideoConverter() {
                       style={{
                         backgroundColor:
                           promptTab === 'upload'
-                            ? colors.background.card
+                            ? colors.primary.main
                             : 'transparent',
                         color:
                           promptTab === 'upload'
-                            ? colors.text.primary
+                            ? colors.text.white
                             : colors.text.secondary,
                         boxShadow:
                           promptTab === 'upload'
@@ -701,11 +701,11 @@ export default function TextToVideoConverter() {
                       style={{
                         backgroundColor:
                           promptTab === 'library'
-                            ? colors.background.card
+                            ? colors.primary.main
                             : 'transparent',
                         color:
                           promptTab === 'library'
-                            ? colors.text.primary
+                            ? colors.text.white
                             : colors.text.secondary,
                         boxShadow:
                           promptTab === 'library'
