@@ -3,6 +3,7 @@ import { X, ChevronDown, Settings2, Trash2, GripVertical } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { Checkbox } from '../ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -16,10 +17,12 @@ export const PromptQueue = ({
   promptQueue,
   onUpdatePrompt,
   onRemovePrompt,
+  onRemovePrompts,
   colors,
   theme,
 }) => {
   const [expandedPrompts, setExpandedPrompts] = useState({});
+  const [selectedPrompts, setSelectedPrompts] = useState([]);
 
   const toggleExpanded = (id) => {
     setExpandedPrompts((prev) => ({
@@ -30,6 +33,29 @@ export const PromptQueue = ({
 
   const updatePromptSettings = (id, settingKey, value) => {
     onUpdatePrompt(id, settingKey, value);
+  };
+
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      setSelectedPrompts(promptQueue.map((item) => item.id));
+    } else {
+      setSelectedPrompts([]);
+    }
+  };
+
+  const handleSelectPrompt = (id, checked) => {
+    if (checked) {
+      setSelectedPrompts((prev) => [...prev, id]);
+    } else {
+      setSelectedPrompts((prev) => prev.filter((itemId) => itemId !== id));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (onRemovePrompts) {
+      onRemovePrompts(selectedPrompts);
+      setSelectedPrompts([]);
+    }
   };
 
   return (
@@ -63,18 +89,63 @@ export const PromptQueue = ({
               </p>
             </div>
           </div>
-          <Badge
-            variant="outline"
-            className="text-xs font-medium"
-            style={{
-              backgroundColor: `${colors.primary.main}15`,
-              color: colors.primary.main,
-              borderColor: colors.primary.main,
-            }}
-          >
-            Batch Mode
-          </Badge>
+          <div className="flex items-center gap-2">
+            {selectedPrompts.length > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteSelected}
+                className="h-8 text-xs"
+              >
+                <Trash2 className="w-3 h-3 mr-1" />
+                Delete ({selectedPrompts.length})
+              </Button>
+            )}
+            <Badge
+              variant="outline"
+              className="text-xs font-medium"
+              style={{
+                backgroundColor: `${colors.primary.main}15`,
+                color: colors.primary.main,
+                borderColor: colors.primary.main,
+              }}
+            >
+              Batch Mode
+            </Badge>
+          </div>
         </div>
+
+        {/* Select All Header */}
+        {promptQueue.length > 0 && (
+          <div className="flex items-center gap-3 mb-3 px-4">
+            <Checkbox
+              checked={
+                promptQueue.length > 0 &&
+                selectedPrompts.length === promptQueue.length
+              }
+              onCheckedChange={handleSelectAll}
+              style={{
+                borderColor:
+                  promptQueue.length > 0 &&
+                  selectedPrompts.length === promptQueue.length
+                    ? colors.primary.main
+                    : colors.text.secondary,
+                backgroundColor:
+                  promptQueue.length > 0 &&
+                  selectedPrompts.length === promptQueue.length
+                    ? colors.primary.main
+                    : 'transparent',
+                color: colors.text.white,
+              }}
+            />
+            <span
+              className="text-xs font-medium"
+              style={{ color: colors.text.secondary }}
+            >
+              Select All
+            </span>
+          </div>
+        )}
 
         <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
           <AnimatePresence>
@@ -97,6 +168,23 @@ export const PromptQueue = ({
                 >
                   {/* Header */}
                   <div className="flex items-start gap-3">
+                    <div className="pt-1">
+                      <Checkbox
+                        checked={selectedPrompts.includes(item.id)}
+                        onCheckedChange={(checked) =>
+                          handleSelectPrompt(item.id, checked)
+                        }
+                        style={{
+                          borderColor: selectedPrompts.includes(item.id)
+                            ? colors.primary.main
+                            : colors.text.secondary,
+                          backgroundColor: selectedPrompts.includes(item.id)
+                            ? colors.primary.main
+                            : 'transparent',
+                          color: colors.text.white,
+                        }}
+                      />
+                    </div>
                     <div
                       className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"
                       style={{

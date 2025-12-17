@@ -306,6 +306,10 @@ export default function TextToVideoConverter() {
     setPromptQueue(promptQueue.filter((item) => item.id !== id));
   };
 
+  const removePromptsFromQueue = (ids) => {
+    setPromptQueue(promptQueue.filter((item) => !ids.includes(item.id)));
+  };
+
   const handleBatchSettingChange = (key, value) => {
     setBatchSettings({ ...batchSettings, [key]: value });
   };
@@ -734,6 +738,7 @@ export default function TextToVideoConverter() {
                         promptQueue={promptQueue}
                         onUpdatePrompt={updatePromptInQueue}
                         onRemovePrompt={removePromptFromQueue}
+                        onRemovePrompts={removePromptsFromQueue}
                         colors={colors}
                         theme={theme}
                       />
