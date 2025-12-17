@@ -14,7 +14,13 @@ import {
 } from 'lucide-react';
 import { Button } from '../ui/button';
 
-export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
+export const Header = ({
+  theme,
+  toggleTheme,
+  colors,
+  onOpenSettings,
+  showLogo = false,
+}) => {
   const navigate = useNavigate();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
@@ -33,13 +39,13 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
 
   return (
     <header
-      className="border-b"
+      className="border-b transition-all duration-300"
       style={{
         backgroundColor: colors.background.card,
         borderColor: colors.border.main,
       }}
     >
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-3">
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-2">
         <div className="flex items-center justify-between">
           {/* Left Section - Hidden on mobile */}
           <div className="hidden md:flex items-center gap-4">
@@ -56,13 +62,19 @@ export const Header = ({ theme, toggleTheme, colors, onOpenSettings }) => {
                 style={{ color: colors.icon.secondary }}
               />
             </Button>
-            <div className="flex items-center gap-2">
+            <div
+              className={`flex items-center gap-2 transition-all duration-500 ease-in-out overflow-hidden ${
+                showLogo
+                  ? 'w-48 opacity-100 translate-x-0'
+                  : 'w-0 opacity-0 -translate-x-4'
+              }`}
+            >
               <Sparkles
-                className="w-5 h-5"
+                className="w-5 h-5 flex-shrink-0"
                 style={{ color: colors.primary.main }}
               />
               <span
-                className="font-semibold"
+                className="font-semibold whitespace-nowrap"
                 style={{ color: colors.text.primary }}
               >
                 AI Video Generator

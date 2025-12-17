@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '../ui/select';
 
-export const SettingsSidebar = ({
+export const Settings = ({
   settings,
   onSettingChange,
   colors,

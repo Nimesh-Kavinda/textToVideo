@@ -1,5 +1,5 @@
 export { Header } from './Header';
-export { SettingsSidebar } from './SettingsSidebar';
+export { Settings } from './Settings';
 export { PromptSection } from './PromptSection';
 export { FileUploadSection } from './FileUploadSection';
 export { VideoPreview } from './VideoPreview';
@@ -9,3 +9,4 @@ export { PromptQueue } from './PromptQueue';
 export { BatchControls } from './BatchControls';
 export { HistoryPanel } from './HistoryPanel';
 export { GeneratedVideosGallery } from './GeneratedVideosGallery';
+export { Sidebar } from './Sidebar';

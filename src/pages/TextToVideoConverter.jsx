@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Settings,
-  X,
-  LayoutDashboard,
-  History,
-  Settings as SettingsIcon,
-} from 'lucide-react';
+import { X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 import { theme as appTheme } from '../theme/theme';
@@ -13,7 +7,8 @@ import { Button } from '../components/ui/button';
 
 import {
   Header,
-  SettingsSidebar,
+  Sidebar,
+  Settings,
   PromptSection,
   FileUploadSection,
   AdvancedSettingsModal,
@@ -39,6 +34,7 @@ export default function TextToVideoConverter() {
   const [activeTab, setActiveTab] = useState('motion');
   const [sidebarTab, setSidebarTab] = useState('prompts');
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Batch processing state
   const [promptQueue, setPromptQueue] = useState([]);
@@ -583,281 +579,195 @@ export default function TextToVideoConverter() {
 
   return (
     <div
-      className="min-h-screen flex flex-col"
+      className="h-screen flex overflow-hidden"
       style={{
         background: colors.background.page,
       }}
     >
-      {/* <AnnouncementBanner colors={colors} /> */}
-      <Header
-        theme={theme}
-        toggleTheme={toggleTheme}
+      {/* Left Sidebar - Fixed Height */}
+      <Sidebar
         colors={colors}
-        onOpenSettings={() => setIsSettingsOpen(true)}
+        isSidebarCollapsed={isSidebarCollapsed}
+        setIsSidebarCollapsed={setIsSidebarCollapsed}
+        sidebarTab={sidebarTab}
+        setSidebarTab={setSidebarTab}
+        generationHistoryCount={generationHistory.length}
       />
 
-      <div
-        className="flex-1 grid grid-cols-12 gap-0 overflow-hidden"
-        style={{ height: 'calc(100vh - 120px)' }}
-      >
-        {/* Left Sidebar - Navigation - 2 cols */}
-        <div
-          className="col-span-2 border-r flex flex-col justify-between py-6"
-          style={{
-            borderColor: colors.border.main,
-            backgroundColor: colors.background.card,
-          }}
-        >
-          {/* Navigation Links */}
-          <div className="space-y-2 px-4">
-            <div
-              className="mb-6 px-2 text-xs font-semibold uppercase tracking-wider"
-              style={{ color: colors.text.tertiary }}
-            >
-              Navigation
-            </div>
-            <button
-              onClick={() => setSidebarTab('prompts')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                sidebarTab === 'prompts' ? 'shadow-sm' : 'hover:bg-opacity-50'
-              }`}
-              style={{
-                backgroundColor:
-                  sidebarTab === 'prompts'
-                    ? colors.primary.main
-                    : 'transparent',
-                color:
-                  sidebarTab === 'prompts'
-                    ? colors.text.white
-                    : colors.text.secondary,
-              }}
-            >
-              <LayoutDashboard className="w-5 h-5" />
-              Prompts
-            </button>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header
+          theme={theme}
+          toggleTheme={toggleTheme}
+          colors={colors}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+          showLogo={isSidebarCollapsed}
+        />
 
-            <button
-              onClick={() => setSidebarTab('history')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                sidebarTab === 'history' ? 'shadow-sm' : 'hover:bg-opacity-50'
-              }`}
-              style={{
-                backgroundColor:
-                  sidebarTab === 'history'
-                    ? colors.primary.main
-                    : 'transparent',
-                color:
-                  sidebarTab === 'history'
-                    ? colors.text.white
-                    : colors.text.secondary,
-              }}
-            >
-              <History className="w-5 h-5" />
-              History
-            </button>
+        <div className="flex-1 grid grid-cols-10 gap-0 overflow-hidden">
+          {/* Middle Content - 6 cols */}
+          <div
+            className="col-span-6 overflow-hidden relative border-r"
+            style={{
+              backgroundColor: colors.background.main,
+              borderColor: colors.border.main,
+            }}
+          >
+            {sidebarTab === 'prompts' && (
+              <div className="flex flex-col h-full overflow-hidden">
+                <div
+                  className="p-6 border-b"
+                  style={{
+                    borderColor: colors.border.main,
+                    backgroundColor: colors.background.card,
+                  }}
+                >
+                  <h2
+                    className="text-xl font-bold mb-1"
+                    style={{ color: colors.text.primary }}
+                  >
+                    Prompt Manager
+                  </h2>
+                  <p
+                    className="text-sm"
+                    style={{ color: colors.text.secondary }}
+                  >
+                    Upload or paste multiple prompts for batch generation
+                  </p>
+                </div>
 
-            <button
-              onClick={() => setSidebarTab('settings')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                sidebarTab === 'settings' ? 'shadow-sm' : 'hover:bg-opacity-50'
-              }`}
-              style={{
-                backgroundColor:
-                  sidebarTab === 'settings'
-                    ? colors.primary.main
-                    : 'transparent',
-                color:
-                  sidebarTab === 'settings'
-                    ? colors.text.white
-                    : colors.text.secondary,
-              }}
-            >
-              <SettingsIcon className="w-5 h-5" />
-              Settings
-            </button>
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                  <div className="space-y-4">
+                    <PromptSection
+                      prompt={prompt}
+                      onPromptChange={setPrompt}
+                      onGenerate={handleGenerate}
+                      onLoadPrompts={handleLoadPromptsFromText}
+                      isGenerating={isGenerating}
+                      uploadedFilesCount={uploadedFiles.length}
+                      colors={colors}
+                    />
+
+                    <FileUploadSection
+                      uploadedFiles={uploadedFiles}
+                      isDragging={isDragging}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      onDragLeave={() => setIsDragging(false)}
+                      onFileUpload={handleFileUpload}
+                      onRemoveFile={removeFile}
+                      onFileClick={handleFileClick}
+                      onLoadPrompts={handleLoadPromptsFromText}
+                      colors={colors}
+                      theme={theme}
+                    />
+
+                    <BatchControls
+                      promptQueue={promptQueue}
+                      batchSettings={batchSettings}
+                      onBatchSettingChange={handleBatchSettingChange}
+                      onStartBatch={handleStartBatch}
+                      onPauseBatch={handlePauseBatch}
+                      onStopBatch={handleStopBatch}
+                      isProcessing={isBatchProcessing}
+                      isPaused={isPaused}
+                      currentProgress={currentProgress}
+                      colors={colors}
+                    />
+
+                    {promptQueue.length > 0 && (
+                      <PromptQueue
+                        promptQueue={promptQueue}
+                        onUpdatePrompt={updatePromptInQueue}
+                        onRemovePrompt={removePromptFromQueue}
+                        colors={colors}
+                        theme={theme}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {sidebarTab === 'history' && (
+              <div className="h-full p-6 overflow-y-auto">
+                <HistoryPanel
+                  history={generationHistory}
+                  onCopyPrompt={handleCopyPrompt}
+                  onDownload={handleDownloadVideo}
+                  onDelete={handleDeleteHistory}
+                  onPreview={(video) => {
+                    setSelectedVideo(video);
+                  }}
+                  colors={colors}
+                />
+              </div>
+            )}
+
+            {sidebarTab === 'settings' && (
+              <div className="h-full p-6 overflow-y-auto">
+                <div className="max-w-3xl mx-auto">
+                  <SettingsSidebar
+                    settings={settings}
+                    onSettingChange={handleSettingChange}
+                    colors={colors}
+                    onOpenAdvancedSettings={handleOpenAdvancedSettings}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Bottom Stats */}
-          <div className="px-6">
+          {/* Right Sidebar - Generated Images - 4 cols */}
+          <div
+            className="col-span-4 flex flex-col h-full overflow-hidden"
+            style={{ backgroundColor: colors.background.card }}
+          >
             <div
-              className="p-4 rounded-xl"
-              style={{ backgroundColor: colors.background.hover }}
+              className="p-6 border-b flex justify-between items-end"
+              style={{
+                borderColor: colors.border.main,
+                backgroundColor: colors.background.card,
+              }}
             >
-              <p
-                className="text-xs font-medium mb-1"
-                style={{ color: colors.text.secondary }}
-              >
-                Images Generated
-              </p>
-              <p
-                className="text-2xl font-bold"
-                style={{ color: colors.text.primary }}
-              >
-                {generationHistory.length}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Area - 6 cols */}
-        <div
-          className="col-span-6 overflow-hidden relative border-r"
-          style={{
-            backgroundColor: colors.background.main,
-            borderColor: colors.border.main,
-          }}
-        >
-          {sidebarTab === 'prompts' && (
-            <div className="flex flex-col h-full overflow-hidden">
-              <div
-                className="p-6 border-b"
-                style={{
-                  borderColor: colors.border.main,
-                  backgroundColor: colors.background.card,
-                }}
-              >
+              <div>
                 <h2
                   className="text-xl font-bold mb-1"
                   style={{ color: colors.text.primary }}
                 >
-                  Prompt Manager
+                  Generated Images
                 </h2>
                 <p className="text-sm" style={{ color: colors.text.secondary }}>
-                  Upload or paste multiple prompts for batch generation
+                  AI-generated results appear here
                 </p>
               </div>
-
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                <div className="space-y-4">
-                  <PromptSection
-                    prompt={prompt}
-                    onPromptChange={setPrompt}
-                    onGenerate={handleGenerate}
-                    onLoadPrompts={handleLoadPromptsFromText}
-                    isGenerating={isGenerating}
-                    uploadedFilesCount={uploadedFiles.length}
-                    colors={colors}
-                  />
-
-                  <FileUploadSection
-                    uploadedFiles={uploadedFiles}
-                    isDragging={isDragging}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                    onDragLeave={() => setIsDragging(false)}
-                    onFileUpload={handleFileUpload}
-                    onRemoveFile={removeFile}
-                    onFileClick={handleFileClick}
-                    onLoadPrompts={handleLoadPromptsFromText}
-                    colors={colors}
-                    theme={theme}
-                  />
-
-                  <BatchControls
-                    promptQueue={promptQueue}
-                    batchSettings={batchSettings}
-                    onBatchSettingChange={handleBatchSettingChange}
-                    onStartBatch={handleStartBatch}
-                    onPauseBatch={handlePauseBatch}
-                    onStopBatch={handleStopBatch}
-                    isProcessing={isBatchProcessing}
-                    isPaused={isPaused}
-                    currentProgress={currentProgress}
-                    colors={colors}
-                  />
-
-                  {promptQueue.length > 0 && (
-                    <PromptQueue
-                      promptQueue={promptQueue}
-                      onUpdatePrompt={updatePromptInQueue}
-                      onRemovePrompt={removePromptFromQueue}
-                      colors={colors}
-                      theme={theme}
-                    />
-                  )}
-                </div>
+              <div className="text-right">
+                <p
+                  className="text-xs font-medium"
+                  style={{ color: colors.text.tertiary }}
+                >
+                  {new Date().toLocaleDateString()}
+                </p>
+                <p
+                  className="text-sm font-medium"
+                  style={{ color: colors.text.primary }}
+                >
+                  {generationHistory.length} images
+                </p>
               </div>
             </div>
-          )}
 
-          {sidebarTab === 'history' && (
-            <div className="h-full p-6 overflow-y-auto">
-              <HistoryPanel
-                history={generationHistory}
+            <div className="flex-1 overflow-y-auto p-6">
+              <GeneratedVideosGallery
+                videos={generationHistory}
                 onCopyPrompt={handleCopyPrompt}
                 onDownload={handleDownloadVideo}
                 onDelete={handleDeleteHistory}
-                onPreview={(video) => {
-                  setSelectedVideo(video);
-                }}
                 colors={colors}
+                isGenerating={isGenerating}
+                currentGenerating={currentProgress.currentPrompt}
               />
             </div>
-          )}
-
-          {sidebarTab === 'settings' && (
-            <div className="h-full p-6 overflow-y-auto">
-              <div className="max-w-3xl mx-auto">
-                <SettingsSidebar
-                  settings={settings}
-                  onSettingChange={handleSettingChange}
-                  colors={colors}
-                  onOpenAdvancedSettings={handleOpenAdvancedSettings}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Sidebar - Generated Images - 4 cols */}
-        <div
-          className="col-span-4 flex flex-col h-full overflow-hidden"
-          style={{ backgroundColor: colors.background.card }}
-        >
-          <div
-            className="p-6 border-b flex justify-between items-end"
-            style={{
-              borderColor: colors.border.main,
-              backgroundColor: colors.background.card,
-            }}
-          >
-            <div>
-              <h2
-                className="text-xl font-bold mb-1"
-                style={{ color: colors.text.primary }}
-              >
-                Generated Images
-              </h2>
-              <p className="text-sm" style={{ color: colors.text.secondary }}>
-                AI-generated results appear here
-              </p>
-            </div>
-            <div className="text-right">
-              <p
-                className="text-xs font-medium"
-                style={{ color: colors.text.tertiary }}
-              >
-                {new Date().toLocaleDateString()}
-              </p>
-              <p
-                className="text-sm font-medium"
-                style={{ color: colors.text.primary }}
-              >
-                {generationHistory.length} images
-              </p>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-6">
-            <GeneratedVideosGallery
-              videos={generationHistory}
-              onCopyPrompt={handleCopyPrompt}
-              onDownload={handleDownloadVideo}
-              onDelete={handleDeleteHistory}
-              colors={colors}
-              isGenerating={isGenerating}
-              currentGenerating={currentProgress.currentPrompt}
-            />
           </div>
         </div>
       </div>
