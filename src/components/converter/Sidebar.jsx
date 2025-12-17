@@ -15,12 +15,13 @@ export const Sidebar = ({
   sidebarTab,
   setSidebarTab,
   generationHistoryCount,
+  className = '',
 }) => {
   return (
     <aside
       className={`flex flex-col border-r transition-all duration-300 ease-in-out relative ${
         isSidebarCollapsed ? 'w-20' : 'w-64'
-      }`}
+      } ${className}`}
       style={{
         borderColor: colors.border.main,
         backgroundColor: colors.background.card,

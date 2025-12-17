@@ -48,7 +48,7 @@ export const Header = ({
       <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-2">
         <div className="flex items-center justify-between">
           {/* Left Section - Hidden on mobile */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center gap-4">
             {/* <Button
               variant="ghost"
               size="sm"
@@ -66,7 +66,7 @@ export const Header = ({
               className={`flex items-center gap-2 transition-all duration-500 ease-in-out overflow-hidden ${
                 showLogo
                   ? 'w-48 opacity-100 translate-x-0'
-                  : 'w-0 opacity-0 -translate-x-4'
+                  : 'w-48 md:w-0 opacity-100 md:opacity-0 translate-x-0 md:-translate-x-4'
               }`}
             >
               <Sparkles
@@ -84,7 +84,7 @@ export const Header = ({
 
           {/* Credits Section - Center */}
           <div
-            className="flex items-center gap-3 px-4 py-2 rounded-full border relative overflow-hidden group"
+            className="hidden md:flex items-center gap-3 px-4 py-2 rounded-full border relative overflow-hidden group"
             style={{
               backgroundColor: colors.background.hover,
               borderColor: colors.border.main,

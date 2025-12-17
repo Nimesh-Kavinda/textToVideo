@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Coins } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 import { theme as appTheme } from '../theme/theme';
@@ -641,6 +641,7 @@ export default function TextToVideoConverter() {
         sidebarTab={sidebarTab}
         setSidebarTab={setSidebarTab}
         generationHistoryCount={generationHistory.length}
+        className="hidden md:flex"
       />
 
       {/* Main Content Area */}
@@ -663,7 +664,96 @@ export default function TextToVideoConverter() {
             }}
           >
             {sidebarTab === 'prompts' && (
-              <div className="flex flex-col h-full overflow-hidden">
+              <div className="flex flex-col h-full overflow-y-auto md:overflow-hidden">
+                {/* Mobile Settings */}
+                <div className="block md:hidden p-6 pb-0">
+                  {/* Mobile Credits Section */}
+                  <div
+                    className="mb-6 flex items-center justify-between p-3 rounded-xl border relative overflow-hidden group"
+                    style={{
+                      backgroundColor: colors.background.hover,
+                      borderColor: colors.border.main,
+                    }}
+                  >
+                    {/* Animated gradient background effect */}
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        animation: 'waveGradient 3s ease infinite',
+                      }}
+                    />
+                    {/* Animated border effect */}
+                    <div
+                      className="absolute inset-0 rounded-xl pointer-events-none"
+                      style={{
+                        background:
+                          'linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.5), rgba(79, 70, 229, 0.3), rgba(99, 102, 241, 0.3))',
+                        backgroundSize: '200% 100%',
+                        animation: 'waveGradient 3s ease infinite',
+                        padding: '2px',
+                        WebkitMask:
+                          'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                        WebkitMaskComposite: 'xor',
+                        maskComposite: 'exclude',
+                      }}
+                    />
+
+                    <div className="flex items-center gap-3 relative z-10">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center"
+                        style={{
+                          background: colors.primary.gradient,
+                        }}
+                      >
+                        <Coins
+                          className="w-5 h-5"
+                          style={{ color: colors.text.white }}
+                        />
+                      </div>
+                      <div>
+                        <p
+                          className="font-bold text-sm"
+                          style={{ color: colors.text.primary }}
+                        >
+                          150 Credits
+                        </p>
+                        <p
+                          className="text-xs"
+                          style={{ color: colors.text.secondary }}
+                        >
+                          Available balance
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="rounded-full px-4 h-8 font-medium text-xs border-0 relative z-10"
+                      style={{
+                        background: colors.primary.gradient,
+                        color: colors.text.white,
+                      }}
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+
+                  <div className="mb-4">
+                    <h2
+                      className="text-lg font-bold"
+                      style={{ color: colors.text.primary }}
+                    >
+                      Settings
+                    </h2>
+                  </div>
+                  <Settings
+                    settings={settings}
+                    onSettingChange={handleSettingChange}
+                    colors={colors}
+                    onOpenAdvancedSettings={handleOpenAdvancedSettings}
+                  />
+                </div>
+
                 <div
                   className="p-6 border-b"
                   style={{
@@ -756,7 +846,7 @@ export default function TextToVideoConverter() {
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <div className="flex-1 md:overflow-y-auto p-6 space-y-6">
                   <div className="space-y-4">
                     {promptTab === 'text' && (
                       <PromptSection
@@ -818,6 +908,30 @@ export default function TextToVideoConverter() {
                         />
                       )}
                     </div>
+
+                    {/* Mobile Generated Images */}
+                    <div
+                      className="block md:hidden mt-8 pt-8 border-t"
+                      style={{ borderColor: colors.border.main }}
+                    >
+                      <div className="mb-4">
+                        <h2
+                          className="text-lg font-bold"
+                          style={{ color: colors.text.primary }}
+                        >
+                          Generated Images
+                        </h2>
+                      </div>
+                      <GeneratedVideosGallery
+                        videos={generationHistory}
+                        onCopyPrompt={handleCopyPrompt}
+                        onDownload={handleDownloadVideo}
+                        onDelete={handleDeleteHistory}
+                        colors={colors}
+                        isGenerating={isGenerating}
+                        currentGenerating={currentProgress.currentPrompt}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -855,14 +969,14 @@ export default function TextToVideoConverter() {
 
           {/* Resizer Handle */}
           <div
-            className="w-1 cursor-col-resize hover:bg-blue-500 transition-colors flex-shrink-0 z-10"
+            className="hidden md:block w-1 cursor-col-resize hover:bg-blue-500 transition-colors flex-shrink-0 z-10"
             style={{ backgroundColor: colors.border.main }}
             onMouseDown={startResizing}
           />
 
           {/* Right Sidebar - Generated Images */}
           <div
-            className="flex flex-col h-full overflow-hidden flex-shrink-0"
+            className="hidden md:flex flex-col h-full overflow-hidden flex-shrink-0"
             style={{
               width: rightPanelWidth,
               backgroundColor: colors.background.card,
