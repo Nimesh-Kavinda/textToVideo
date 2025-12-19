@@ -118,7 +118,7 @@ export const GeneratedVideosGallery = ({
       <div className="p-4 lg:p-6">
         {/* Header */}
         <div className="flex flex-col gap-4 mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3
                 className="font-semibold text-lg lg:text-xl"
@@ -135,7 +135,7 @@ export const GeneratedVideosGallery = ({
             </div>
 
             {videos.length > 0 && (
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 {selectedItems.length > 0 && (
                   <div className="flex items-center gap-2">
                     <Button
@@ -145,7 +145,14 @@ export const GeneratedVideosGallery = ({
                       className="h-8 text-xs"
                     >
                       <Download className="w-3.5 h-3.5 mr-1.5" />
-                      Download ({selectedItems.length})
+                      <span className="hidden sm:inline">Download</span>
+                      <span className="sm:hidden">
+                        ({selectedItems.length})
+                      </span>
+                      <span className="hidden sm:inline">
+                        {' '}
+                        ({selectedItems.length})
+                      </span>
                     </Button>
                     <Button
                       variant="destructive"
@@ -154,11 +161,18 @@ export const GeneratedVideosGallery = ({
                       className="h-8 text-xs"
                     >
                       <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-                      Delete ({selectedItems.length})
+                      <span className="hidden sm:inline">Delete</span>
+                      <span className="sm:hidden">
+                        ({selectedItems.length})
+                      </span>
+                      <span className="hidden sm:inline">
+                        {' '}
+                        ({selectedItems.length})
+                      </span>
                     </Button>
                   </div>
                 )}
-                <div className="flex items-center gap-2 ml-2">
+                <div className="flex items-center gap-2 ml-auto sm:ml-2">
                   <Checkbox
                     checked={
                       filteredVideos.length > 0 &&
@@ -168,7 +182,7 @@ export const GeneratedVideosGallery = ({
                     colors={colors}
                   />
                   <span
-                    className="text-xs"
+                    className="text-xs whitespace-nowrap"
                     style={{ color: colors.text.secondary }}
                   >
                     Select All

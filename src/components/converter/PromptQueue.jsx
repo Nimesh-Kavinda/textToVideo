@@ -67,10 +67,10 @@ export const PromptQueue = ({
       }}
     >
       <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{
                 background: colors.primary.gradient,
               }}
@@ -89,13 +89,13 @@ export const PromptQueue = ({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
             {selectedPrompts.length > 0 && (
               <Button
                 variant="destructive"
                 size="sm"
                 onClick={handleDeleteSelected}
-                className="h-8 text-xs"
+                className="h-8 text-xs whitespace-nowrap"
               >
                 <Trash2 className="w-3 h-3 mr-1" />
                 Delete ({selectedPrompts.length})
@@ -103,7 +103,7 @@ export const PromptQueue = ({
             )}
             <Badge
               variant="outline"
-              className="text-xs font-medium"
+              className="text-xs font-medium whitespace-nowrap"
               style={{
                 backgroundColor: `${colors.primary.main}15`,
                 color: colors.primary.main,
