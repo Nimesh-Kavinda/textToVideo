@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Play, FileText, Brain, Wand2 } from 'lucide-react';
+import {
+  Play,
+  FileText,
+  Brain,
+  Wand2,
+  Film,
+  Sparkles,
+  ScanLine,
+  Cpu,
+  Clapperboard,
+} from 'lucide-react';
 import { Card } from '../ui/card';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const VideoPreview = ({ isGenerating, progress, colors }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -32,134 +43,187 @@ export const VideoPreview = ({ isGenerating, progress, colors }) => {
   const getStepContent = () => {
     switch (currentStep) {
       case 1:
-        // Step 1: Reading with wave color fade effect
+        // Step 1: Reading - Scanning Effect
         return (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <FileText
-              className="w-12 h-12"
-              style={{ color: `${colors.text.white}70` }}
-            />
-            <div className="text-center">
-              <p
-                className="text-sm font-medium mb-3"
-                style={{ color: `${colors.text.white}80` }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-6"
+          >
+            <div className="relative">
+              <motion.div
+                animate={{
+                  boxShadow: [
+                    `0 0 20px ${colors.text.white}20`,
+                    `0 0 40px ${colors.text.white}40`,
+                    `0 0 20px ${colors.text.white}20`,
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20"
               >
-                Reading
-              </p>
-              {/* Wave color fade effect */}
-              <div
-                className="relative w-64 h-1 rounded-full overflow-hidden"
-                style={{ backgroundColor: `${colors.text.white}15` }}
-              >
-                <div
-                  className="absolute inset-0 animate-wave-fade"
-                  style={{
-                    background: `linear-gradient(90deg, transparent 0%, ${colors.text.white}60 50%, transparent 100%)`,
-                  }}
-                ></div>
-              </div>
+                <FileText className="w-12 h-12 text-white/90" />
+              </motion.div>
+
+              {/* Scanning Beam */}
+              <motion.div
+                className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent blur-[2px]"
+                animate={{ top: ['0%', '100%', '0%'] }}
+                transition={{ duration: 3, ease: 'linear', repeat: Infinity }}
+              />
             </div>
-          </div>
+
+            <div className="text-center space-y-2">
+              <motion.h3
+                className="text-xl font-semibold text-white tracking-wide"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                Reading Prompt
+              </motion.h3>
+              <p className="text-white/60 text-sm">
+                Analyzing text structure and semantics...
+              </p>
+            </div>
+          </motion.div>
         );
 
       case 2:
-        // Step 2: Analyzing with percentage
+        // Step 2: Analyzing - Neural Network / Brain Effect
         return (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <Brain
-              className="w-12 h-12 animate-pulse"
-              style={{ color: `${colors.text.white}70` }}
-            />
-            <div className="text-center">
-              <p
-                className="text-sm font-medium mb-2"
-                style={{ color: `${colors.text.white}80` }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-6"
+          >
+            <div className="relative">
+              {/* Orbiting Rings */}
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute inset-0 rounded-full border border-white/20"
+                  style={{ scale: 1 + i * 0.4 }}
+                  animate={{
+                    rotate: 360,
+                    scale: [1 + i * 0.4, 1.1 + i * 0.4, 1 + i * 0.4],
+                  }}
+                  transition={{
+                    rotate: {
+                      duration: 10 - i * 2,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    },
+                    scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+                  }}
+                />
+              ))}
+
+              <motion.div
+                className="p-6 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 relative z-10"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                Analyzing
-              </p>
-              <div
-                className="text-3xl font-bold"
-                style={{ color: `${colors.text.white}90` }}
-              >
-                {analyzingProgress.toFixed(2)}%
-              </div>
+                <Brain className="w-12 h-12 text-white/90" />
+              </motion.div>
+
+              {/* Particles */}
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={`p-${i}`}
+                  className="absolute w-2 h-2 bg-white/60 rounded-full"
+                  style={{ top: '50%', left: '50%' }}
+                  animate={{
+                    x: Math.cos(i * 60 * (Math.PI / 180)) * 60,
+                    y: Math.sin(i * 60 * (Math.PI / 180)) * 60,
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+                />
+              ))}
             </div>
-          </div>
+
+            <div className="text-center space-y-2">
+              <div className="flex items-center justify-center gap-2">
+                <Cpu className="w-4 h-4 text-white/70 animate-pulse" />
+                <span className="text-xl font-bold text-white tabular-nums">
+                  {analyzingProgress.toFixed(0)}%
+                </span>
+              </div>
+              <p className="text-white/60 text-sm">
+                Processing neural pathways...
+              </p>
+            </div>
+          </motion.div>
         );
 
       case 3:
-        // Step 3: Generating with circular progress
-        const circleProgress = ((progress - 66) / 34) * 100;
-        const circumference = 2 * Math.PI * 45;
-        const strokeDashoffset =
-          circumference - (circleProgress / 100) * circumference;
-
+        // Step 3: Generating - Cinematic/Rendering Effect
         return (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            {/* Circular Progress */}
-            <div className="relative w-28 h-28">
-              {/* Background circle */}
-              <svg className="w-full h-full transform -rotate-90">
-                <circle
-                  cx="56"
-                  cy="56"
-                  r="45"
-                  stroke={`${colors.text.white}20`}
-                  strokeWidth="6"
-                  fill="none"
-                />
-                {/* Progress circle */}
-                <circle
-                  cx="56"
-                  cy="56"
-                  r="45"
-                  stroke={`${colors.text.white}70`}
-                  strokeWidth="6"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  className="transition-all duration-300"
-                />
-              </svg>
-              {/* Center icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Wand2
-                  className="w-8 h-8 animate-spin-slow"
-                  style={{ color: `${colors.text.white}70` }}
-                />
-              </div>
-            </div>
-
-            <div className="text-center">
-              <p
-                className="text-sm font-medium mb-3"
-                style={{ color: `${colors.text.white}80` }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-8"
+          >
+            <div className="relative">
+              {/* Film Reel Effect */}
+              <motion.div
+                className="relative w-24 h-24 rounded-full border-4 border-dashed border-white/30 flex items-center justify-center"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
               >
-                Generating
-              </p>
-
-              {/* Progress bar */}
-              <div
-                className="w-64 h-1 rounded-full overflow-hidden"
-                style={{ backgroundColor: `${colors.text.white}15` }}
-              >
-                <div
-                  className="h-full transition-all duration-300 rounded-full"
-                  style={{
-                    width: `${progress}%`,
-                    backgroundColor: `${colors.text.white}70`,
+                <motion.div
+                  className="absolute inset-2 rounded-full border-4 border-white/20"
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: 'linear',
                   }}
-                ></div>
+                />
+                <Clapperboard className="w-10 h-10 text-white/90" />
+              </motion.div>
+
+              {/* Glowing Pulse */}
+              <motion.div
+                className="absolute inset-0 rounded-full bg-white/5"
+                animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+            </div>
+
+            <div className="w-64 space-y-3">
+              <div className="flex justify-between text-sm text-white/80 font-medium">
+                <span>Rendering Video</span>
+                <span>{progress}%</span>
               </div>
-              <p
-                className="text-xs mt-2"
-                style={{ color: `${colors.text.white}60` }}
-              >
-                {progress}%
+
+              {/* Advanced Progress Bar */}
+              <div className="h-2 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-white/60 via-white to-white/60"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ type: 'spring', stiffness: 50 }}
+                >
+                  <motion.div
+                    className="w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                    animate={{ x: ['-100%', '100%'] }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
+                  />
+                </motion.div>
+              </div>
+              <p className="text-center text-xs text-white/50">
+                Finalizing frames and audio sync...
               </p>
             </div>
-          </div>
+          </motion.div>
         );
 
       default:
@@ -169,7 +233,7 @@ export const VideoPreview = ({ isGenerating, progress, colors }) => {
 
   return (
     <Card
-      className="border"
+      className="border overflow-hidden"
       style={{
         backgroundColor: colors.background.card,
         borderColor: colors.border.main,
@@ -177,69 +241,70 @@ export const VideoPreview = ({ isGenerating, progress, colors }) => {
     >
       <div className="p-6">
         <div
-          className="relative aspect-video rounded-lg overflow-hidden"
+          className="relative aspect-video rounded-xl overflow-hidden shadow-2xl"
           style={{ backgroundColor: colors.background.canvas }}
         >
-          {isGenerating ? (
-            <div
-              className="absolute inset-0"
-              style={{ background: colors.primary.gradient }}
-            >
-              {getStepContent()}
-            </div>
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-              <div
-                className="p-5 rounded-full"
-                style={{ backgroundColor: colors.background.secondary }}
+          <AnimatePresence mode="wait">
+            {isGenerating ? (
+              <motion.div
+                key="generating"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(135deg, ${colors.primary.main} 0%, ${colors.secondary.main} 100%)`,
+                }}
               >
-                <Play
-                  className="w-10 h-10"
-                  style={{ color: colors.primary.main }}
+                {/* Background Pattern */}
+                <div
+                  className="absolute inset-0 opacity-10"
+                  style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                    backgroundSize: '24px 24px',
+                  }}
                 />
-              </div>
-              <p
-                className="font-medium"
-                style={{ color: colors.text.tertiary }}
+
+                {getStepContent()}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4"
               >
-                Video Not Found
-              </p>
-              <p className="text-sm" style={{ color: colors.text.disabled }}>
-                Start creating your first video
-              </p>
-            </div>
-          )}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-6 rounded-full shadow-lg cursor-pointer group"
+                  style={{ backgroundColor: colors.background.secondary }}
+                >
+                  <Play
+                    className="w-12 h-12 ml-1 transition-colors duration-300"
+                    style={{ color: colors.primary.main }}
+                  />
+                </motion.div>
+                <div className="text-center space-y-1">
+                  <p
+                    className="font-semibold text-lg"
+                    style={{ color: colors.text.tertiary }}
+                  >
+                    Ready to Create
+                  </p>
+                  <p
+                    className="text-sm"
+                    style={{ color: colors.text.disabled }}
+                  >
+                    Enter your prompt to start generating
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-
-      {/* Custom animations */}
-      <style jsx>{`
-        @keyframes wave-fade {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-
-        .animate-wave-fade {
-          animation: wave-fade 2s ease-in-out infinite;
-        }
-
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .animate-spin-slow {
-          animation: spin-slow 3s linear infinite;
-        }
-      `}</style>
     </Card>
   );
 };

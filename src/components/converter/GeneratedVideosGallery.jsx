@@ -8,6 +8,7 @@ import {
   Filter,
   Maximize2,
   X,
+  Loader2,
 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -251,33 +252,46 @@ export const GeneratedVideosGallery = ({
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-4 rounded-lg border-2"
-            style={{
-              backgroundColor: `${colors.primary.main}10`,
-              borderColor: colors.primary.main,
-            }}
+            className="mb-6"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex-shrink-0">
+            <div
+              className="p-4 rounded-xl border backdrop-blur-sm flex items-center gap-4"
+              style={{
+                backgroundColor: `${colors.primary.main}08`,
+                borderColor: `${colors.primary.main}30`,
+              }}
+            >
+              <div className="relative">
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center animate-pulse"
-                  style={{ backgroundColor: `${colors.primary.main}20` }}
+                  className="absolute inset-0 rounded-full animate-ping opacity-20"
+                  style={{ backgroundColor: colors.primary.main }}
+                />
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center relative z-10"
+                  style={{ backgroundColor: `${colors.primary.main}15` }}
                 >
-                  <Play
-                    className="w-5 h-5"
+                  <Loader2
+                    className="w-5 h-5 animate-spin"
                     style={{ color: colors.primary.main }}
                   />
                 </div>
               </div>
-              <div className="flex-1 min-w-0">
+
+              <div className="flex-1 min-w-0 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: colors.text.primary }}
+                  >
+                    Creating Magic
+                  </span>
+                  <span
+                    className="flex h-1.5 w-1.5 rounded-full animate-pulse"
+                    style={{ backgroundColor: colors.primary.main }}
+                  />
+                </div>
                 <p
-                  className="text-sm font-semibold"
-                  style={{ color: colors.text.primary }}
-                >
-                  Generating Video...
-                </p>
-                <p
-                  className="text-xs line-clamp-1 mt-1"
+                  className="text-xs line-clamp-1 opacity-80"
                   style={{ color: colors.text.secondary }}
                 >
                   {currentGenerating}
@@ -371,20 +385,45 @@ export const GeneratedVideosGallery = ({
                           </>
                         ) : video.status === 'processing' ? (
                           <div
-                            className="absolute inset-0 flex items-center justify-center"
+                            className="absolute inset-0 overflow-hidden"
                             style={{ backgroundColor: colors.background.input }}
                           >
-                            <div className="text-center">
+                            {/* Animated Gradient Background - Waving Effect */}
+                            <motion.div
+                              key={colors.primary.main} // Force re-mount on theme change
+                              className="absolute inset-y-0 w-[200%]"
+                              style={{
+                                background: `linear-gradient(90deg, transparent 0%, ${colors.primary.main}40 50%, transparent 100%)`,
+                                left: '-100%',
+                              }}
+                              animate={{
+                                x: ['0%', '200%'],
+                              }}
+                              transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: 'linear',
+                              }}
+                            />
+
+                            {/* Logo Overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center z-10 opacity-50">
                               <div
-                                className="w-12 h-12 mx-auto mb-2 rounded-full border-4 border-t-transparent animate-spin"
-                                style={{ borderColor: colors.primary.main }}
-                              />
-                              <p
-                                className="text-xs font-medium"
-                                style={{ color: colors.text.secondary }}
+                                className="w-16 h-16 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg"
+                                style={{
+                                  backgroundColor: `${colors.background.card}80`,
+                                  border: `1px solid ${colors.border.light}`,
+                                }}
                               >
-                                Processing...
-                              </p>
+                                <div
+                                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                  style={{
+                                    background: colors.primary.gradient,
+                                  }}
+                                >
+                                  <Play className="w-5 h-5 text-white fill-white" />
+                                </div>
+                              </div>
                             </div>
                           </div>
                         ) : (

@@ -7,6 +7,7 @@ import {
   Pause,
   StopCircle,
   Folder,
+  Wand2,
 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -77,18 +78,29 @@ export const BatchControls = ({
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-3"
+            className="space-y-4 p-4 rounded-xl border"
+            style={{
+              backgroundColor: `${colors.primary.main}05`,
+              borderColor: `${colors.primary.main}20`,
+            }}
           >
             <div className="flex items-center justify-between">
-              <span
-                className="text-sm font-medium"
-                style={{ color: colors.text.primary }}
-              >
-                Processing Progress
-              </span>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isPaused ? 'bg-yellow-500' : 'bg-green-500 animate-pulse'
+                  }`}
+                />
+                <span
+                  className="text-sm font-semibold"
+                  style={{ color: colors.text.primary }}
+                >
+                  {isPaused ? 'Batch Paused' : 'Processing Batch'}
+                </span>
+              </div>
               <Badge
                 variant="outline"
-                className="text-xs"
+                className="text-xs px-2 py-0.5"
                 style={{
                   backgroundColor: isPaused
                     ? `${colors.status.warning}15`
@@ -101,55 +113,79 @@ export const BatchControls = ({
                     : colors.status.success,
                 }}
               >
-                {isPaused ? 'Paused' : 'Processing'}
+                {isPaused ? (
+                  <Pause className="w-3 h-3 mr-1" />
+                ) : (
+                  <Clock className="w-3 h-3 mr-1 animate-spin-slow" />
+                )}
+                {isPaused ? 'Paused' : 'Running'}
               </Badge>
             </div>
 
-            <Progress
-              value={progressPercentage}
-              className="h-2"
-              style={{
-                backgroundColor: colors.background.hover,
-              }}
-            />
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs">
+                <span style={{ color: colors.text.secondary }}>Progress</span>
+                <span style={{ color: colors.text.primary, fontWeight: 600 }}>
+                  {progressPercentage.toFixed(0)}%
+                </span>
+              </div>
 
-            <div className="flex items-center justify-between text-xs">
-              <span style={{ color: colors.text.secondary }}>
-                {completedPrompts} of {totalPrompts} prompts completed
-              </span>
-              <span style={{ color: colors.text.tertiary }}>
-                {progressPercentage.toFixed(0)}%
-              </span>
+              {/* Custom Progress Bar */}
+              <div
+                className="h-2.5 w-full rounded-full overflow-hidden"
+                style={{ backgroundColor: colors.background.hover }}
+              >
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{
+                    background: isPaused
+                      ? colors.status.warning
+                      : colors.primary.gradient,
+                  }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+
+              <div
+                className="flex justify-between text-xs"
+                style={{ color: colors.text.tertiary }}
+              >
+                <span>
+                  {completedPrompts} / {totalPrompts} completed
+                </span>
+                {currentProgress.estimatedTime && (
+                  <span>~{currentProgress.estimatedTime} left</span>
+                )}
+              </div>
             </div>
 
             {currentProgress.currentPrompt && (
               <div
-                className="p-3 rounded-lg border"
+                className="p-3 rounded-lg border bg-white/5"
                 style={{
-                  backgroundColor: colors.background.hover,
                   borderColor: colors.border.main,
                 }}
               >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Wand2
+                    className="w-3 h-3"
+                    style={{ color: colors.primary.main }}
+                  />
+                  <span
+                    className="text-xs font-medium"
+                    style={{ color: colors.text.secondary }}
+                  >
+                    Currently Generating
+                  </span>
+                </div>
                 <p
-                  className="text-xs font-medium mb-1"
-                  style={{ color: colors.text.secondary }}
-                >
-                  Current Prompt:
-                </p>
-                <p
-                  className="text-xs line-clamp-2"
+                  className="text-xs line-clamp-2 leading-relaxed"
                   style={{ color: colors.text.primary }}
                 >
                   {currentProgress.currentPrompt}
                 </p>
-                {currentProgress.estimatedTime && (
-                  <p
-                    className="text-xs mt-2"
-                    style={{ color: colors.text.tertiary }}
-                  >
-                    Estimated time remaining: {currentProgress.estimatedTime}
-                  </p>
-                )}
               </div>
             )}
           </motion.div>
