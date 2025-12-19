@@ -6,6 +6,7 @@ import {
   Clock,
   Pause,
   StopCircle,
+  Folder,
 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -227,6 +228,22 @@ export const BatchControls = ({
                 <p className="text-xs" style={{ color: colors.text.tertiary }}>
                   Download videos automatically after generation
                 </p>
+                {autoDownload && (
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] px-2 h-5 font-normal flex items-center gap-1"
+                      style={{
+                        borderColor: colors.border.main,
+                        color: colors.text.secondary,
+                        backgroundColor: colors.background.card,
+                      }}
+                    >
+                      <Folder className="w-3 h-3" />
+                      C:/Downloads/AI_Videos
+                    </Badge>
+                  </div>
+                )}
               </div>
             </div>
             <Switch
