@@ -37,7 +37,16 @@ export default function TextToVideoConverter() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [promptTab, setPromptTab] = useState('text');
-  const [rightPanelWidth, setRightPanelWidth] = useState(400);
+
+  // Initialize with a responsive width
+  const [rightPanelWidth, setRightPanelWidth] = useState(() => {
+    if (typeof window !== 'undefined') {
+      // Larger default for 15.6" screens (usually 1920px)
+      return window.innerWidth >= 1500 ? 600 : 450;
+    }
+    return 450;
+  });
+
   const [isResizing, setIsResizing] = useState(false);
 
   // Handle resizing
@@ -49,8 +58,13 @@ export default function TextToVideoConverter() {
   React.useEffect(() => {
     const handleMouseMove = (e) => {
       if (!isResizing) return;
+
+      const sidebarWidth = isSidebarCollapsed ? 80 : 256;
+      const minMiddleWidth = 350; // Ensure middle panel doesn't get too small
+      const maxRightWidth = window.innerWidth - sidebarWidth - minMiddleWidth;
       const newWidth = window.innerWidth - e.clientX;
-      if (newWidth > 300 && newWidth < 800) {
+
+      if (newWidth > 300 && newWidth < maxRightWidth) {
         setRightPanelWidth(newWidth);
       }
     };
@@ -68,7 +82,28 @@ export default function TextToVideoConverter() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing]);
+  }, [isResizing, isSidebarCollapsed]);
+
+  // Handle window resize to maintain responsive layout
+  React.useEffect(() => {
+    const handleWindowResize = () => {
+      const sidebarWidth = isSidebarCollapsed ? 80 : 256;
+      const minMiddleWidth = 350;
+      const maxRightWidth = window.innerWidth - sidebarWidth - minMiddleWidth;
+
+      setRightPanelWidth((prev) => {
+        // If current width is larger than allowed max, shrink it
+        // But keep it at least 300px if possible
+        if (prev > maxRightWidth) {
+          return Math.max(300, maxRightWidth);
+        }
+        return prev;
+      });
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+    return () => window.removeEventListener('resize', handleWindowResize);
+  }, [isSidebarCollapsed]);
 
   // Batch processing state
   const [promptQueue, setPromptQueue] = useState([]);
