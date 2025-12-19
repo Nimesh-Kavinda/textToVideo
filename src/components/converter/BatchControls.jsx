@@ -168,33 +168,35 @@ export const BatchControls = ({
               />
               Delay Between Generations
             </label>
-            <Select
-              value={delay}
-              onValueChange={(value) => onBatchSettingChange('delay', value)}
-              disabled={isProcessing}
-            >
-              <SelectTrigger
-                className="h-10 text-sm"
-                style={{
-                  backgroundColor: colors.background.input,
-                  borderColor: colors.border.main,
-                  color: colors.text.primary,
-                }}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent
-                style={{
-                  backgroundColor: colors.background.card,
-                  borderColor: colors.border.main,
-                }}
-              >
-                <SelectItem value="30s">30 seconds</SelectItem>
-                <SelectItem value="1min">1 minute</SelectItem>
-                <SelectItem value="2min">2 minutes</SelectItem>
-                <SelectItem value="5min">5 minutes</SelectItem>
-              </SelectContent>
-            </Select>
+
+            <div className="flex flex-wrap gap-2">
+              {['5s', '10s', '20s', '30s', '1min'].map((value) => (
+                <button
+                  key={value}
+                  onClick={() => onBatchSettingChange('delay', value)}
+                  disabled={isProcessing}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all border ${
+                    delay === value ? '' : 'hover:bg-opacity-80'
+                  }`}
+                  style={{
+                    backgroundColor:
+                      delay === value ? colors.primary.main : 'transparent',
+                    color:
+                      delay === value
+                        ? colors.text.white
+                        : colors.text.secondary,
+                    borderColor:
+                      delay === value ? 'transparent' : colors.border.main,
+                    ringColor: colors.primary.main,
+                    opacity: isProcessing ? 0.5 : 1,
+                    cursor: isProcessing ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
+
             <p className="text-xs" style={{ color: colors.text.tertiary }}>
               Prevents API rate limits and ensures quality
             </p>

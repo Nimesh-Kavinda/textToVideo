@@ -343,8 +343,17 @@ export default function TextToVideoConverter() {
       },
     }));
 
-    setPromptQueue([...promptQueue, ...queue]);
+    const newQueue = [...promptQueue, ...queue];
+    setPromptQueue(newQueue);
     setPrompt(''); // Clear the input after loading
+
+    // Auto-select delay based on total prompts
+    let recommendedDelay = '5s';
+    if (newQueue.length > 20) recommendedDelay = '30s';
+    else if (newQueue.length > 10) recommendedDelay = '20s';
+    else if (newQueue.length > 5) recommendedDelay = '10s';
+
+    setBatchSettings((prev) => ({ ...prev, delay: recommendedDelay }));
   };
 
   const handleLoadPromptsFromText = () => {
@@ -411,12 +420,27 @@ export default function TextToVideoConverter() {
       }
     }, 500);
 
-    const delayMs = {
-      '30s': 30000,
-      '1min': 60000,
-      '2min': 120000,
-      '5min': 300000,
-    }[batchSettings.delay];
+    const getDelayMs = () => {
+      if (batchSettings.delay === 'random') {
+        // Random between 30s (30000ms) and 2min (120000ms)
+        return Math.floor(Math.random() * (120000 - 30000 + 1)) + 30000;
+      }
+      return (
+        {
+          '5s': 5000,
+          '10s': 10000,
+          '20s': 20000,
+          '30s': 30000,
+          '1min': 60000,
+        }[batchSettings.delay] || 10000
+      );
+    };
+
+    // Use average delay for estimation if random
+    const estimatedDelayMs =
+      batchSettings.delay === 'random'
+        ? 75000 // Average of 30s and 120s
+        : getDelayMs();
 
     for (let i = 0; i < promptQueue.length; i++) {
       if (isPaused) {
@@ -438,7 +462,7 @@ export default function TextToVideoConverter() {
         completed: i,
         currentPrompt: currentItem.text,
         estimatedTime: `${Math.ceil(
-          (promptQueue.length - i) * (delayMs / 60000)
+          (promptQueue.length - i) * (estimatedDelayMs / 60000)
         )} minutes`,
       });
 
@@ -458,7 +482,8 @@ export default function TextToVideoConverter() {
 
       // Delay before next prompt (except for the last one)
       if (i < promptQueue.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        const currentDelay = getDelayMs();
+        await new Promise((resolve) => setTimeout(resolve, currentDelay));
       }
     }
 
