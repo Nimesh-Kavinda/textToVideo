@@ -110,7 +110,7 @@ export const Sidebar = ({
               className="text-xs font-medium mb-1"
               style={{ color: colors.text.secondary }}
             >
-              Images Generated
+              Videos Generated
             </p>
             <p
               className="text-2xl font-bold"

@@ -979,7 +979,7 @@ export default function TextToVideoConverter() {
                           className="text-lg font-bold"
                           style={{ color: colors.text.primary }}
                         >
-                          Generated Images
+                          Generated Videos
                         </h2>
                       </div>
                       <GeneratedVideosGallery
@@ -1071,7 +1071,7 @@ export default function TextToVideoConverter() {
                   className="text-sm font-medium"
                   style={{ color: colors.text.primary }}
                 >
-                  {generationHistory.length} images
+                  {generationHistory.length} Videos
                 </p>
               </div>
             </div>
