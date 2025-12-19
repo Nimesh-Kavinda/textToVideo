@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Coins } from 'lucide-react';
+import { X, Coins, Ban } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 import { theme as appTheme } from '../theme/theme';
@@ -139,7 +139,7 @@ export default function TextToVideoConverter() {
     {
       id: 'none',
       label: 'None',
-      icon: '🧪',
+      icon: Ban,
     },
 
     {

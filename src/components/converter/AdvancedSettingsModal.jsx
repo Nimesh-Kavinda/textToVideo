@@ -1,5 +1,16 @@
 import React from 'react';
-import { Sliders } from 'lucide-react';
+import {
+  Sliders,
+  Film,
+  Video,
+  Settings2,
+  RectangleHorizontal,
+  RectangleVertical,
+  Square,
+  Volume2,
+  Clapperboard,
+  Zap,
+} from 'lucide-react';
 import { Button } from '../ui/button';
 import { Switch } from '../ui/switch';
 import {
@@ -53,21 +64,24 @@ export const AdvancedSettingsModal = ({
           </div>
         </DialogHeader>
 
-        <DialogBody className="p-4" style={{ backgroundColor: colors.background.card }}>
+        <DialogBody
+          className="p-4"
+          style={{ backgroundColor: colors.background.card }}
+        >
           {/* Tabs */}
           <div
             className="flex gap-2 mb-6 border-b pb-px"
             style={{ borderColor: colors.border.main }}
           >
             {[
-              { id: 'motion', label: 'Motion Control', icon: '🎬' },
-              { id: 'video', label: 'Video Settings', icon: '🎥' },
-              { id: 'advanced', label: 'Advanced', icon: '⚙️' },
+              { id: 'motion', label: 'Motion Control', icon: Film },
+              { id: 'video', label: 'Video Settings', icon: Video },
+              { id: 'advanced', label: 'Advanced', icon: Settings2 },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="px-3 py-2 rounded-t-lg font-medium text-xs transition-all"
+                className="px-3 py-2 rounded-t-lg font-medium text-xs transition-all flex items-center"
                 style={{
                   backgroundColor:
                     activeTab === tab.id
@@ -83,7 +97,7 @@ export const AdvancedSettingsModal = ({
                       : 'none',
                 }}
               >
-                <span className="mr-1.5">{tab.icon}</span>
+                <tab.icon className="w-3.5 h-3.5 mr-1.5" />
                 {tab.label}
               </button>
             ))}
@@ -102,10 +116,11 @@ export const AdvancedSettingsModal = ({
                     onClick={() => onSettingChange('motionControl', preset.id)}
                     className="group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
-                      border: `2px solid ${settings.motionControl === preset.id
-                        ? colors.primary.main
-                        : colors.border.main
-                        }`,
+                      border: `2px solid ${
+                        settings.motionControl === preset.id
+                          ? colors.primary.main
+                          : colors.border.main
+                      }`,
                       backgroundColor: colors.background.hover,
                     }}
                   >
@@ -123,12 +138,17 @@ export const AdvancedSettingsModal = ({
                       </div>
                     ) : (
                       <div
-                        className="h-20 flex items-center justify-center text-3xl"
+                        className="h-20 flex items-center justify-center"
                         style={{
                           backgroundColor: colors.background.canvas,
                         }}
                       >
-                        {preset.icon}
+                        {preset.icon && (
+                          <preset.icon
+                            className="w-8 h-8"
+                            style={{ color: colors.text.secondary }}
+                          />
+                        )}
                       </div>
                     )}
 
@@ -188,10 +208,11 @@ export const AdvancedSettingsModal = ({
                           settings.duration === duration
                             ? colors.text.white
                             : colors.text.primary,
-                        border: `2px solid ${settings.duration === duration
-                          ? 'transparent'
-                          : colors.border.main
-                          }`,
+                        border: `2px solid ${
+                          settings.duration === duration
+                            ? 'transparent'
+                            : colors.border.main
+                        }`,
                       }}
                     >
                       {duration}
@@ -210,11 +231,11 @@ export const AdvancedSettingsModal = ({
                 </label>
                 <div className="grid grid-cols-5 gap-2">
                   {[
-                    { value: '16:9', label: '16:9', icon: '▭' },
-                    { value: '4:3', label: '4:3', icon: '▬' },
-                    { value: '1:1', label: '1:1', icon: '□' },
-                    { value: '3:4', label: '3:4', icon: '▯' },
-                    { value: '9:16', label: '9:16', icon: '▮' },
+                    { value: '16:9', label: '16:9', icon: RectangleHorizontal },
+                    { value: '4:3', label: '4:3', icon: RectangleHorizontal },
+                    { value: '1:1', label: '1:1', icon: Square },
+                    { value: '3:4', label: '3:4', icon: RectangleVertical },
+                    { value: '9:16', label: '9:16', icon: RectangleVertical },
                   ].map((ratio) => (
                     <button
                       key={ratio.value}
@@ -231,13 +252,14 @@ export const AdvancedSettingsModal = ({
                           settings.aspectRatio === ratio.value
                             ? colors.text.white
                             : colors.text.primary,
-                        border: `2px solid ${settings.aspectRatio === ratio.value
-                          ? 'transparent'
-                          : colors.border.main
-                          }`,
+                        border: `2px solid ${
+                          settings.aspectRatio === ratio.value
+                            ? 'transparent'
+                            : colors.border.main
+                        }`,
                       }}
                     >
-                      <span className="text-2xl">{ratio.icon}</span>
+                      <ratio.icon className="w-6 h-6" />
                       <span>{ratio.label}</span>
                     </button>
                   ))}
@@ -267,10 +289,11 @@ export const AdvancedSettingsModal = ({
                           settings.resolution === res
                             ? colors.text.white
                             : colors.text.primary,
-                        border: `2px solid ${settings.resolution === res
-                          ? 'transparent'
-                          : colors.border.main
-                          }`,
+                        border: `2px solid ${
+                          settings.resolution === res
+                            ? 'transparent'
+                            : colors.border.main
+                        }`,
                       }}
                     >
                       {res}
@@ -291,10 +314,13 @@ export const AdvancedSettingsModal = ({
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
                     style={{ backgroundColor: colors.background.card }}
                   >
-                    🔊
+                    <Volume2
+                      className="w-5 h-5"
+                      style={{ color: colors.text.primary }}
+                    />
                   </div>
                   <div>
                     <label
@@ -326,10 +352,13 @@ export const AdvancedSettingsModal = ({
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
                     style={{ backgroundColor: colors.background.card }}
                   >
-                    🎬
+                    <Clapperboard
+                      className="w-5 h-5"
+                      style={{ color: colors.text.primary }}
+                    />
                   </div>
                   <div>
                     <label
@@ -361,10 +390,13 @@ export const AdvancedSettingsModal = ({
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
                     style={{ backgroundColor: colors.background.card }}
                   >
-                    ⚡
+                    <Zap
+                      className="w-5 h-5"
+                      style={{ color: colors.text.primary }}
+                    />
                   </div>
                   <div>
                     <label
