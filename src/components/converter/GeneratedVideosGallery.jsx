@@ -306,7 +306,7 @@ export const GeneratedVideosGallery = ({
           <div
             className="grid gap-4"
             style={{
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
             }}
           >
             <AnimatePresence>

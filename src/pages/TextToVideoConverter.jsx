@@ -64,7 +64,7 @@ export default function TextToVideoConverter() {
       const maxRightWidth = window.innerWidth - sidebarWidth - minMiddleWidth;
       const newWidth = window.innerWidth - e.clientX;
 
-      if (newWidth > 300 && newWidth < maxRightWidth) {
+      if (newWidth > 320 && newWidth < maxRightWidth) {
         setRightPanelWidth(newWidth);
       }
     };
@@ -93,9 +93,9 @@ export default function TextToVideoConverter() {
 
       setRightPanelWidth((prev) => {
         // If current width is larger than allowed max, shrink it
-        // But keep it at least 300px if possible
+        // But keep it at least 320px if possible
         if (prev > maxRightWidth) {
-          return Math.max(300, maxRightWidth);
+          return Math.max(320, maxRightWidth);
         }
         return prev;
       });
