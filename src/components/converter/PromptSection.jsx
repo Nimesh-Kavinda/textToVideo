@@ -51,11 +51,11 @@ export const PromptSection = ({
                 padding: '12px 14px',
               }}
             />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <div className="flex flex-wrap gap-3">
               <Button
                 onClick={onLoadPrompts}
                 disabled={!prompt.trim()}
-                className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full"
+                className="flex-1 min-w-[240px] h-auto px-6 py-3.5 font-medium text-sm shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed border-0 whitespace-nowrap"
                 style={{
                   background: prompt.trim()
                     ? colors.secondary.gradient
@@ -64,16 +64,16 @@ export const PromptSection = ({
                     ? colors.text.white
                     : colors.text.tertiary,
                   boxShadow: colors.shadow.md,
-                  borderRadius: '20px',
+                  borderRadius: '16px',
                 }}
               >
-                <List className="w-4 h-4 mr-2" />
+                <List className="w-4 h-4 mr-2.5" />
                 Load Prompts to Queue
               </Button>
               <Button
                 onClick={onGenerate}
                 disabled={!prompt.trim()}
-                className="h-auto px-6 py-3 font-medium text-sm shadow-md transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border-0 flex-shrink-0 whitespace-nowrap w-full"
+                className="flex-1 min-w-[240px] h-auto px-6 py-3.5 font-medium text-sm shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed border-0 whitespace-nowrap"
                 style={{
                   background: prompt.trim()
                     ? colors.primary.gradient
@@ -82,10 +82,10 @@ export const PromptSection = ({
                     ? colors.text.white
                     : colors.text.tertiary,
                   boxShadow: colors.shadow.md,
-                  borderRadius: '20px',
+                  borderRadius: '16px',
                 }}
               >
-                <Wand2 className="w-4 h-4 mr-2" />
+                <Wand2 className="w-4 h-4 mr-2.5" />
                 {isGenerating ? 'Generating...' : 'Generate Single'}
               </Button>
             </div>
