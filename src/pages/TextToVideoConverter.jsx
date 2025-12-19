@@ -1054,7 +1054,7 @@ export default function TextToVideoConverter() {
                   className="text-xl font-bold mb-1"
                   style={{ color: colors.text.primary }}
                 >
-                  Generated Images
+                  Generated Videos
                 </h2>
                 <p className="text-sm" style={{ color: colors.text.secondary }}>
                   AI-generated results appear here

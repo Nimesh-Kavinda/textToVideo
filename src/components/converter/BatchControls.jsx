@@ -280,6 +280,22 @@ export const BatchControls = ({
                 <p className="text-xs" style={{ color: colors.text.tertiary }}>
                   Create spreadsheet with all generation details
                 </p>
+                {createCSV && (
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] px-2 h-5 font-normal flex items-center gap-1"
+                      style={{
+                        borderColor: colors.border.main,
+                        color: colors.text.secondary,
+                        backgroundColor: colors.background.card,
+                      }}
+                    >
+                      <Folder className="w-3 h-3" />
+                      C:/Documents/AI_Reports
+                    </Badge>
+                  </div>
+                )}
               </div>
             </div>
             <Switch
