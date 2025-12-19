@@ -128,11 +128,11 @@ export const theme = {
       inverse: '#0f172a', // Slate-900 - for light backgrounds
     },
     border: {
-      main: 'transparent', // No visible borders
-      light: 'transparent', // No visible borders
-      dark: 'transparent', // No visible borders
-      input: '#1a1a1a', // Very subtle input border
-      hover: '#2a2a2a', // Very subtle hover border
+      main: '#27272a', // Zinc-800 - Subtle border for sections
+      light: '#18181b', // Zinc-900 - Very subtle
+      dark: '#3f3f46', // Zinc-700 - More visible
+      input: '#27272a', // Zinc-800 - Input border
+      hover: '#3f3f46', // Zinc-700 - Hover border
     },
     button: {
       primary: '#8b5cf6', // Violet-500
