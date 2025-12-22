@@ -42,7 +42,7 @@ export default function TextToVideoConverter() {
   const [rightPanelWidth, setRightPanelWidth] = useState(() => {
     if (typeof window !== 'undefined') {
       // Larger default for 15.6" screens (usually 1920px)
-      return window.innerWidth >= 1500 ? 600 : 450;
+      return window.innerWidth >= 1500 ? 700 : 450;
     }
     return 450;
   });
@@ -133,7 +133,6 @@ export default function TextToVideoConverter() {
     previewMode: false,
     motionControl: 'none',
   });
-
 
   // Motion control presets
   const motionPresets = [
@@ -907,91 +906,93 @@ export default function TextToVideoConverter() {
                   </div>
                 </div>
 
-                <div className="flex-1 md:overflow-y-auto p-6 space-y-6">
-                  <div className="space-y-4">
-                    {promptTab === 'text' && (
-                      <PromptSection
-                        prompt={prompt}
-                        onPromptChange={setPrompt}
-                        onGenerate={handleGenerate}
-                        onLoadPrompts={handleLoadPromptsFromText}
-                        isGenerating={isGenerating}
-                        uploadedFilesCount={uploadedFiles.length}
-                        colors={colors}
-                      />
-                    )}
+                <div className="flex-1 md:overflow-y-auto p-6">
+                  <div className="max-w-5xl mx-auto space-y-6">
+                    <div className="space-y-4">
+                      {promptTab === 'text' && (
+                        <PromptSection
+                          prompt={prompt}
+                          onPromptChange={setPrompt}
+                          onGenerate={handleGenerate}
+                          onLoadPrompts={handleLoadPromptsFromText}
+                          isGenerating={isGenerating}
+                          uploadedFilesCount={uploadedFiles.length}
+                          colors={colors}
+                        />
+                      )}
 
-                    {promptTab === 'upload' && (
-                      <FileUploadSection
-                        uploadedFiles={uploadedFiles}
-                        isDragging={isDragging}
-                        onDragOver={handleDragOver}
-                        onDrop={handleDrop}
-                        onDragLeave={() => setIsDragging(false)}
-                        onFileUpload={handleFileUpload}
-                        onRemoveFile={removeFile}
-                        onFileClick={handleFileClick}
-                        onLoadPrompts={handleLoadPromptsFromText}
-                        colors={colors}
-                        theme={theme}
-                      />
-                    )}
-
-                    {promptTab === 'library' && (
-                      <PromptLibrary
-                        onUsePrompt={handleUsePrompt}
-                        colors={colors}
-                      />
-                    )}
-
-                    <div id="prompt-queue" className="space-y-4">
-                      <BatchControls
-                        promptQueue={promptQueue}
-                        batchSettings={batchSettings}
-                        onBatchSettingChange={handleBatchSettingChange}
-                        onStartBatch={handleStartBatch}
-                        onPauseBatch={handlePauseBatch}
-                        onStopBatch={handleStopBatch}
-                        isProcessing={isBatchProcessing}
-                        isPaused={isPaused}
-                        currentProgress={currentProgress}
-                        colors={colors}
-                      />
-
-                      {promptQueue.length > 0 && (
-                        <PromptQueue
-                          promptQueue={promptQueue}
-                          onUpdatePrompt={updatePromptInQueue}
-                          onRemovePrompt={removePromptFromQueue}
-                          onRemovePrompts={removePromptsFromQueue}
+                      {promptTab === 'upload' && (
+                        <FileUploadSection
+                          uploadedFiles={uploadedFiles}
+                          isDragging={isDragging}
+                          onDragOver={handleDragOver}
+                          onDrop={handleDrop}
+                          onDragLeave={() => setIsDragging(false)}
+                          onFileUpload={handleFileUpload}
+                          onRemoveFile={removeFile}
+                          onFileClick={handleFileClick}
+                          onLoadPrompts={handleLoadPromptsFromText}
                           colors={colors}
                           theme={theme}
                         />
                       )}
-                    </div>
 
-                    {/* Mobile Generated Images */}
-                    <div
-                      className="block md:hidden mt-8 pt-8 border-t"
-                      style={{ borderColor: colors.border.main }}
-                    >
-                      <div className="mb-4">
-                        <h2
-                          className="text-lg font-bold"
-                          style={{ color: colors.text.primary }}
-                        >
-                          Generated Videos
-                        </h2>
+                      {promptTab === 'library' && (
+                        <PromptLibrary
+                          onUsePrompt={handleUsePrompt}
+                          colors={colors}
+                        />
+                      )}
+
+                      <div id="prompt-queue" className="space-y-4">
+                        <BatchControls
+                          promptQueue={promptQueue}
+                          batchSettings={batchSettings}
+                          onBatchSettingChange={handleBatchSettingChange}
+                          onStartBatch={handleStartBatch}
+                          onPauseBatch={handlePauseBatch}
+                          onStopBatch={handleStopBatch}
+                          isProcessing={isBatchProcessing}
+                          isPaused={isPaused}
+                          currentProgress={currentProgress}
+                          colors={colors}
+                        />
+
+                        {promptQueue.length > 0 && (
+                          <PromptQueue
+                            promptQueue={promptQueue}
+                            onUpdatePrompt={updatePromptInQueue}
+                            onRemovePrompt={removePromptFromQueue}
+                            onRemovePrompts={removePromptsFromQueue}
+                            colors={colors}
+                            theme={theme}
+                          />
+                        )}
                       </div>
-                      <GeneratedVideosGallery
-                        videos={generationHistory}
-                        onCopyPrompt={handleCopyPrompt}
-                        onDownload={handleDownloadVideo}
-                        onDelete={handleDeleteHistory}
-                        colors={colors}
-                        isGenerating={isGenerating}
-                        currentGenerating={currentProgress.currentPrompt}
-                      />
+
+                      {/* Mobile Generated Images */}
+                      <div
+                        className="block md:hidden mt-8 pt-8 border-t"
+                        style={{ borderColor: colors.border.main }}
+                      >
+                        <div className="mb-4">
+                          <h2
+                            className="text-lg font-bold"
+                            style={{ color: colors.text.primary }}
+                          >
+                            Generated Videos
+                          </h2>
+                        </div>
+                        <GeneratedVideosGallery
+                          videos={generationHistory}
+                          onCopyPrompt={handleCopyPrompt}
+                          onDownload={handleDownloadVideo}
+                          onDelete={handleDeleteHistory}
+                          colors={colors}
+                          isGenerating={isGenerating}
+                          currentGenerating={currentProgress.currentPrompt}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1000,17 +1001,19 @@ export default function TextToVideoConverter() {
 
             {sidebarTab === 'history' && (
               <div className="h-full p-6 overflow-y-auto">
-                <HistoryPanel
-                  history={generationHistory}
-                  onCopyPrompt={handleCopyPrompt}
-                  onDownload={handleDownloadVideo}
-                  onDelete={handleDeleteHistory}
-                  onDeleteItems={handleDeleteHistoryItems}
-                  onPreview={(video) => {
-                    setSelectedVideo(video);
-                  }}
-                  colors={colors}
-                />
+                <div className="max-w-5xl mx-auto w-full">
+                  <HistoryPanel
+                    history={generationHistory}
+                    onCopyPrompt={handleCopyPrompt}
+                    onDownload={handleDownloadVideo}
+                    onDelete={handleDeleteHistory}
+                    onDeleteItems={handleDeleteHistoryItems}
+                    onPreview={(video) => {
+                      setSelectedVideo(video);
+                    }}
+                    colors={colors}
+                  />
+                </div>
               </div>
             )}
 
