@@ -9,6 +9,8 @@ import {
   Maximize2,
   X,
   Loader2,
+  LayoutGrid,
+  List,
 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -36,6 +38,7 @@ export const GeneratedVideosGallery = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [viewMode, setViewMode] = useState('grid');
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -194,7 +197,48 @@ export const GeneratedVideosGallery = ({
           </div>
 
           {videos.length > 0 && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              <div
+                className="flex items-center bg-secondary/20 rounded-lg p-1 border"
+                style={{ borderColor: colors.border.main }}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 w-7 p-0 ${
+                    viewMode === 'grid'
+                      ? 'bg-background shadow-sm'
+                      : 'hover:bg-background/50'
+                  }`}
+                  onClick={() => setViewMode('grid')}
+                  style={{
+                    color:
+                      viewMode === 'grid'
+                        ? colors.text.primary
+                        : colors.text.tertiary,
+                  }}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 w-7 p-0 ${
+                    viewMode === 'list'
+                      ? 'bg-background shadow-sm'
+                      : 'hover:bg-background/50'
+                  }`}
+                  onClick={() => setViewMode('list')}
+                  style={{
+                    color:
+                      viewMode === 'list'
+                        ? colors.text.primary
+                        : colors.text.tertiary,
+                  }}
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+              </div>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger
                   className="h-9 text-xs w-[120px]"
@@ -304,10 +348,17 @@ export const GeneratedVideosGallery = ({
         {/* Video Gallery Grid */}
         {filteredVideos.length > 0 ? (
           <div
-            className="grid gap-4"
-            style={{
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-            }}
+            className={
+              viewMode === 'grid' ? 'grid gap-4' : 'flex flex-col gap-3'
+            }
+            style={
+              viewMode === 'grid'
+                ? {
+                    gridTemplateColumns:
+                      'repeat(auto-fill, minmax(240px, 1fr))',
+                  }
+                : {}
+            }
           >
             <AnimatePresence>
               {filteredVideos.map((video) => {
@@ -322,7 +373,11 @@ export const GeneratedVideosGallery = ({
                     transition={{ duration: 0.2 }}
                   >
                     <div
-                      className="rounded-lg border overflow-hidden transition-all hover:shadow-lg group relative flex flex-col h-full"
+                      className={`rounded-lg border overflow-hidden transition-all hover:shadow-lg group relative flex ${
+                        viewMode === 'grid'
+                          ? 'flex-col h-full'
+                          : 'flex-row h-32'
+                      }`}
                       style={{
                         backgroundColor: colors.background.hover,
                         borderColor: selectedItems.includes(video.id)
@@ -342,7 +397,11 @@ export const GeneratedVideosGallery = ({
 
                       {/* Video Preview Thumbnail */}
                       <div
-                        className="relative aspect-video cursor-pointer overflow-hidden"
+                        className={`relative cursor-pointer overflow-hidden ${
+                          viewMode === 'grid'
+                            ? 'aspect-video w-full'
+                            : 'w-48 h-full shrink-0'
+                        }`}
                         style={{ backgroundColor: colors.background.input }}
                         onClick={() => setSelectedVideo(video)}
                       >
@@ -459,9 +518,17 @@ export const GeneratedVideosGallery = ({
                       </div>
 
                       {/* Video Info */}
-                      <div className="p-3 flex flex-col flex-1">
+                      <div
+                        className={`p-3 flex flex-col flex-1 ${
+                          viewMode === 'list' ? 'justify-between' : ''
+                        }`}
+                      >
                         <p
-                          className="text-sm font-medium mb-2 line-clamp-2 min-h-[2.5rem]"
+                          className={`text-sm font-medium mb-2 ${
+                            viewMode === 'grid'
+                              ? 'line-clamp-2 min-h-[2.5rem]'
+                              : 'line-clamp-2'
+                          }`}
                           style={{ color: colors.text.primary }}
                         >
                           {video.prompt}
@@ -498,13 +565,21 @@ export const GeneratedVideosGallery = ({
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="mt-auto grid grid-cols-3 gap-1.5">
+                        <div
+                          className={`mt-auto ${
+                            viewMode === 'grid'
+                              ? 'grid grid-cols-3'
+                              : 'flex justify-end'
+                          } gap-1.5`}
+                        >
                           {video.status === 'completed' && (
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => onDownload(video)}
-                              className="h-7 text-[10px] px-1 w-full"
+                              className={`h-7 text-[10px] px-1 ${
+                                viewMode === 'grid' ? 'w-full' : ''
+                              }`}
                               style={{
                                 backgroundColor: colors.background.card,
                                 borderColor: colors.border.main,
@@ -520,7 +595,9 @@ export const GeneratedVideosGallery = ({
                             size="sm"
                             variant="outline"
                             onClick={() => onCopyPrompt(video.prompt)}
-                            className="h-7 text-[10px] px-1 w-full"
+                            className={`h-7 text-[10px] px-1 ${
+                              viewMode === 'grid' ? 'w-full' : ''
+                            }`}
                             style={{
                               backgroundColor: colors.background.card,
                               borderColor: colors.border.main,
@@ -536,7 +613,9 @@ export const GeneratedVideosGallery = ({
                               size="sm"
                               variant="ghost"
                               onClick={() => onDelete(video.id)}
-                              className="h-7 text-[10px] px-1 w-full"
+                              className={`h-7 text-[10px] px-1 ${
+                                viewMode === 'grid' ? 'w-full' : ''
+                              }`}
                               style={{ color: colors.status.error }}
                             >
                               <Trash2 className="w-3 h-3 mr-1" />
