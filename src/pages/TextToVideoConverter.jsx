@@ -1,7 +1,3 @@
-import React, { useState } from 'react';
-import { X, Coins, Ban } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
-
 import { theme as appTheme } from '../theme/theme';
 import { Button } from '../components/ui/button';
 
